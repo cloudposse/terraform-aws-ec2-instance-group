@@ -1,6 +1,6 @@
-# terraform-aws-ec2-instance [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-ec2-instance.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-ec2-instance)
+# terraform-aws-ec2-instance-group [![Build Status](https://travis-ci.org/cloudposse/terraform-aws-ec2-instance-group.svg?branch=master)](https://travis-ci.org/cloudposse/terraform-aws-ec2-instance-group)
 
-Terraform Module for providing a general purpose EC2 host.
+Terraform Module for providing N general purpose EC2 hosts.
 
 Included features:
 * Automatically create a Security Group
@@ -19,7 +19,7 @@ Include this repository as a module in your existing terraform code.
 
 ```hcl
 module "instance" {
-  source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=master"
+  source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
   namespace                   = "${var.namespace}"
   name                        = "${var.name}"
   stage                       = "${var.stage}"
@@ -28,6 +28,8 @@ module "instance" {
   vpc_id                      = "${var.vpc_id}"
   security_groups             = ["${var.security_groups}"]
   subnet                      = "${var.subnet}"
+
+  instance_count              = "3"
 }
 ```
 
@@ -35,7 +37,7 @@ module "instance" {
 
 ```hcl
 module "kafka_instance" {
-  source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=master"
+  source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
   namespace                   = "${var.namespace}"
   name                        = "${var.name}"
   stage                       = "${var.stage}"
@@ -47,25 +49,7 @@ module "kafka_instance" {
   additional_ips_count        = "1"
   ebs_volume_count            = "2"
   allowed_ports               = ["22", "80", "443"]
-}
-```
 
-### Example with additional EC2 servers and volumes and EIP
-
-```hcl
-module "kafka_instance" {
-  source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance.git?ref=master"
-  namespace                   = "${var.namespace}"
-  name                        = "${var.name}"
-  stage                       = "${var.stage}"
-  ssh_key_pair                = "${var.ssh_key_pair}"
-  vpc_id                      = "${var.vpc_id}"
-  security_groups             = ["${var.security_groups}"]
-  subnet                      = "${var.subnet}"
-  associate_public_ip_address = "true"
-  additional_ips_count        = "1"
-  ebs_volume_count            = "2"
-  allowed_ports               = ["22", "80", "443"]
   instance_count              = "3"
 }
 ```
@@ -82,8 +66,9 @@ It is necessary to run `terraform get` or `terraform init` to download this modu
 Now reference the label when creating an instance (for example):
 ```hcl
 resource "aws_ami_from_instance" "example" {
+  count              = "${length(module.instance.*.id)}"
   name               = "terraform-example"
-  source_instance_id = "${module.admin_tier.id}"
+  source_instance_id = "${element(module.instance.*.id, count.index)}"
 }
 ```
 
@@ -137,22 +122,22 @@ resource "aws_ami_from_instance" "example" {
 
 ## Outputs
 
-| Name                           | Description                                                        |
-|:-------------------------------|:-------------------------------------------------------------------|
-| `id`                           | Disambiguated ID                                                   |
-| `private_dns`                  | Private DNS of the instance                                        |
-| `private_ip`                   | Private IP of the instance                                         |
-| `public_ip`                    | Public IP of the instance (or EIP )                                |
-| `aws_key_pair`                 | Name of AWS key                                                    |
-| `ssh_key_pem_path`             | Local path to SSH pem key                                          |
-| `security_group_id`            | ID of the AWS Security Group associated with the instance          |
-| `role`                         | Name of the AWS IAM Role associated with the instance              |
-| `alarm`                        | CloudWatch Alarm ID                                                |
-| `additional_eni_ids`           | Map of ENI to EIP                                                  |
-| `ebs_ids`                      | IDs of EBSs                                                        |
-| `primary_network_interface_id` | ID of the instance's primary network interface                     |
-| `network_interface_id`         | ID of the network interface that was created with the instance     |
-| `public_dns`                   | Public DNS of the instance (or DNS of EIP)                         |
+| Name                           |  Type  |  Description                                                        |
+|:-------------------------------|:------:|:-------------------------------------------------------------------:|
+| `id`                           |  list  | Disambiguated IDs                                                   |
+| `private_dns`                  |  list  | Private DNS of the instances                                        |
+| `private_ip`                   |  list  | Private IP of the instances                                         |
+| `public_ip`                    |  list  | Public IPs of the instance (or EIP )                                |
+| `aws_key_pair`                 | string | Name of AWS key                                                     |
+| `ssh_key_pem_path`             | string | Local path to SSH pem key                                           |
+| `security_group_id`            | string | ID of the AWS Security Group associated with the instance           |
+| `role`                         |  list  | Name of the AWS IAM Role associated with the instance               |
+| `alarm`                        | string | CloudWatch Alarm ID                                                 |
+| `additional_eni_ids`           |  map   | ENI to EIP                                                          |
+| `ebs_ids`                      |  list  | IDs of EBSs                                                         |
+| `primary_network_interface_id` |  list  | ID of the instances primary network interfaces                      |
+| `network_interface_id`         |  list  | ID of the network interface that was created with the instance      |
+| `public_dns`                   |  list  | Public DNS of the instance (or DNS of EIP)                          |
 
 ## License
 

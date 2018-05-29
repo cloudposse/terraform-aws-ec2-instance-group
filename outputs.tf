@@ -5,15 +5,16 @@ output "public_ips" {
 
 output "private_ip" {
   description = "Private IPs of instances"
-  value       = "${split(",",join(",", aws_instance.default.*.private_ip))}"
+  value       = "${aws_instance.default.*.private_ip}"
 }
 
 output "private_dns" {
   description = "Private DNS records of instances"
-  value       = "${split(",",join(",", aws_instance.default.*.private_dns))}"
+  value       = "${aws_instance.default.*.private_dns}"
 }
 
 locals {
+  # Split/Join used here so that the replace can be used inbetween.
   ip_dns_list = "${split(",", replace(join(",", distinct(compact(concat(aws_eip.default.*.public_ip,aws_instance.default.*.public_ip, aws_eip.additional.*.public_ip, list() )))), ".", "-"))}"
   dns_names   = "${formatlist("%v.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com", distinct(compact(local.ip_dns_list)))}"
 }
@@ -48,12 +49,12 @@ output "security_group_ids" {
 
 output "role" {
   description = "Name of AWS IAM Role associated with creating instance"
-  value       = "${join(",", aws_iam_role.default.*.name)}"
+  value       = "${compact(aws_iam_role.default.*.name)}"
 }
 
 output "alarm" {
   description = "CloudWatch Alarm ID"
-  value       = "${join(",", aws_cloudwatch_metric_alarm.default.*.id)}"
+  value       = "${aws_cloudwatch_metric_alarm.default.*.id}"
 }
 
 output "additional_eni_ids" {
@@ -63,17 +64,17 @@ output "additional_eni_ids" {
 
 output "ebs_ids" {
   description = "ID of EBSs"
-  value       = "${join(",", aws_ebs_volume.default.*.id)}"
+  value       = "${aws_ebs_volume.default.*.id}"
 }
 
 output "primary_network_interface_id" {
   description = "ID of the instance's primary network interface"
-  value       = "${join(",", aws_instance.default.*.primary_network_interface_id)}"
+  value       = "${aws_instance.default.*.primary_network_interface_id}"
 }
 
 output "network_interface_id" {
   description = "ID of the network interface that was created with the instance"
-  value       = "${join(",", aws_instance.default.*.network_interface_id)}"
+  value       = "${aws_instance.default.*.network_interface_id}"
 }
 
 output "eips_per_instance" {
