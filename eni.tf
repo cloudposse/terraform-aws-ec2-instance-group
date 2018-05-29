@@ -31,10 +31,9 @@ resource "aws_eip" "additional" {
 
 resource "null_resource" "additional_eip" {
   # Have at least 1, so that resource exists for output without error, workaround for terraform 0.11.x If instance_count or additional_eips is 0 then the `created` output will be false otherwise it will be true
-  count = "${signum(local.instance_count * local.additional_ips_count) == 1 ? local.additional_ips_count * local.instance_count : 1}"
+  count = "${signum(local.instance_count * local.additional_ips_count) == 1 ? local.additional_ips_count * local.instance_count : 0}"
 
   triggers {
-    created    = "${local.instance_count * local.additional_ips_count == 0 ? false : true }"
     public_dns = "ec2-${replace(element(coalescelist(aws_eip.additional.*.public_ip, list("invalid")), count.index), ".", "-")}.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com"
   }
 }

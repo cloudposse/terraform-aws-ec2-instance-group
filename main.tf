@@ -55,14 +55,14 @@ data "aws_ami" "info" {
 
 # Apply the tf_label module for this resource
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.3.3"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.2"
   namespace  = "${var.namespace}"
   stage      = "${var.stage}"
   name       = "${var.name}"
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
   tags       = "${merge(map("AZ", "${local.availability_zone}"), var.tags)}"
-  enabled    = "${local.instance_count > 0 ? "true" : "false"}"
+  enabled    = "true"
 }
 
 resource "aws_iam_instance_profile" "default" {
@@ -132,11 +132,9 @@ resource "aws_eip" "default" {
 }
 
 resource "null_resource" "eip" {
-  # Have at least 1, so that resource exists for output without error, workaround for terraform 0.11.x If instance_count or additional_eips is 0 then the `created` output will be false otherwise it will be true
-  count = "${signum(local.instance_count * local.count_default_ips) == 1 ? local.count_default_ips * local.instance_count : 1}"
+  count = "${signum(local.instance_count * local.count_default_ips) == 1 ? local.count_default_ips * local.instance_count : 0}"
 
   triggers {
-    created    = "${local.instance_count * local.count_default_ips == 0 ? false : true }"
     public_dns = "ec2-${replace(element(coalescelist(aws_eip.default.*.public_ip, list("invalid")), count.index), ".", "-")}.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com"
   }
 }

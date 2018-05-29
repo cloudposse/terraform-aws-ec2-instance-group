@@ -1,34 +1,26 @@
 output "public_ip" {
-  description = "Public IP of instance (or EIP )"
-  value       = "${join(",",coalescelist(concat(aws_eip.default.*.public_ip, list()),aws_instance.default.*.public_ip))}"
+  description = "List of Public IPs of instances (or EIP )"
+  value       = "${split(",",join(",",coalescelist(concat(aws_eip.default.*.public_ip, list()),aws_instance.default.*.public_ip)))}"
 }
 
 output "private_ip" {
-  description = "Private IP of instance"
-  value       = "${join(",", aws_instance.default.*.private_ip)}"
+  description = "Private IPs of instances"
+  value       = "${split(",",join(",", aws_instance.default.*.private_ip))}"
 }
 
 output "private_dns" {
-  description = "Private DNS of instance"
-  value       = "${join(",", aws_instance.default.*.private_dns)}"
-}
-
-# Workaround to handle null resource that can have variable values, from strings to empty lists.
-locals {
-  list_eip            = "${null_resource.eip.0.triggers.created == true ? join(",", null_resource.eip.*.triggers.public_dns) : ""}"
-  list_additional_eip = "${null_resource.additional_eip.0.triggers.created == true ? join(",", null_resource.additional_eip.*.triggers.public_dns) : ""}"
-  local_dns_output    = "${join(",", distinct(compact(concat(split(",", local.list_additional_eip), split(",", local.list_eip), aws_instance.default.*.public_dns))))}"
+  description = "Private DNS records of instances"
+  value       = "${split(",",join(",", aws_instance.default.*.private_dns))}"
 }
 
 output "public_dns" {
-  description = "Public DNS of instance (or DNS of EIP)"
-
-  value = "${local.local_dns_output}"
+  description = "Public DNS records of instances (or DNS of EIP)"
+  value       = "${distinct(compact(concat(null_resource.additional_eip.*.triggers.public_dns, null_resource.eip.*.triggers.public_dns, aws_instance.default.*.public_dns)))}"
 }
 
 output "id" {
-  description = "Disambiguated ID"
-  value       = "${join(",", aws_instance.default.*.id)}"
+  description = "Disambiguated ID list"
+  value       = "${aws_instance.default.*.id}"
 }
 
 output "aws_key_pair_name" {
