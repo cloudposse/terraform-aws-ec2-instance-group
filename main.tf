@@ -131,14 +131,6 @@ resource "aws_eip" "default" {
   depends_on        = ["aws_instance.default"]
 }
 
-resource "null_resource" "eip" {
-  count = "${signum(local.instance_count * local.count_default_ips) == 1 ? local.count_default_ips * local.instance_count : 0}"
-
-  triggers {
-    public_dns = "ec2-${replace(element(coalescelist(aws_eip.default.*.public_ip, list("invalid")), count.index), ".", "-")}.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com"
-  }
-}
-
 resource "aws_ebs_volume" "default" {
   count             = "${var.ebs_volume_count * local.instance_count}"
   availability_zone = "${local.availability_zone}"

@@ -1,9 +1,9 @@
-#  Local .terraform directories
-**/.terraform/*
-
-# .tfstate files
-*.tfstate
-*.tfstate.*
-
-# .tfvars files
-*.tfvars
+# Module directory
+**/.terraform/
+.idea
+*.iml
+**/terraform.tfstate
+**/terraform.tfstate.backup
+**/terraform.tfvars
+**/*.pem
+**/*.pub

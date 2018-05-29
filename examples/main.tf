@@ -79,6 +79,14 @@ output "public_dns" {
   }
 }
 
+output "public_ips" {
+  value = {
+    zero = "${module.zero_servers.public_ips}"
+    one  = "${module.one_server.public_ips}"
+    two  = "${module.two_servers.public_ips}"
+  }
+}
+
 output "instance_count" {
   value = {
     zero = "${module.zero_servers.instance_count}"
