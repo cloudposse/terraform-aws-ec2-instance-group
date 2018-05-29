@@ -2,6 +2,9 @@
 
 Terraform Module for providing N general purpose EC2 hosts.
 
+**IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc). 
+
+
 Included features:
 * Automatically create a Security Group
 * Option to switch EIP attachment
