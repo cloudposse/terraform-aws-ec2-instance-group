@@ -2,6 +2,8 @@
 
 Terraform Module for providing N general purpose EC2 hosts.
 
+If you only need to provision a single EC2 instance, consider using the [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) module instead.
+
 **IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc). 
 
 
@@ -125,22 +127,22 @@ resource "aws_ami_from_instance" "example" {
 
 ## Outputs
 
-| Name                           |  Type  |  Description                                                        |
-|:-------------------------------|:------:|:-------------------------------------------------------------------:|
-| `id`                           |  list  | Disambiguated IDs                                                   |
-| `private_dns`                  |  list  | Private DNS of the instances                                        |
-| `private_ip`                   |  list  | Private IP of the instances                                         |
-| `public_ip`                    |  list  | Public IPs of the instance (or EIP )                                |
-| `aws_key_pair`                 | string | Name of AWS key                                                     |
-| `ssh_key_pem_path`             | string | Local path to SSH pem key                                           |
-| `security_group_id`            | string | ID of the AWS Security Group associated with the instance           |
-| `role`                         |  list  | Name of the AWS IAM Role associated with the instance               |
-| `alarm`                        | string | CloudWatch Alarm ID                                                 |
-| `additional_eni_ids`           |  map   | ENI to EIP                                                          |
-| `ebs_ids`                      |  list  | IDs of EBSs                                                         |
-| `primary_network_interface_id` |  list  | ID of the instances primary network interfaces                      |
-| `network_interface_id`         |  list  | ID of the network interface that was created with the instance      |
-| `public_dns`                   |  list  | Public DNS of the instance (or DNS of EIP)                          |
+| Name                            |  Type  |  Description                                                        |
+|:-------------------------------:|:------:|:-------------------------------------------------------------------:|
+| `ids`                           |  list  | Disambiguated IDs                                                   |
+| `private_dns`                   |  list  | Private DNS records of the instances                                |
+| `private_ips`                   |  list  | Private IPs of the instances                                        |
+| `public_ips`                    |  list  | Public IPs of the instance (or EIP )                                |
+| `aws_key_pair`                  | string | Name of AWS key                                                     |
+| `ssh_key_pem_path`              | string | Local path to SSH pem key                                           |
+| `security_group_id`             | string | ID of the AWS Security Group associated with the instance           |
+| `roles`                         |  list  | Name of the AWS IAM Roles associated with the instance              |
+| `alarms`                        |  list  | CloudWatch Alarm IDs                                                |
+| `additional_eni_ids`            |  map   | ENI to EIP                                                          |
+| `ebs_ids`                       |  list  | IDs of EBSs                                                         |
+| `primary_network_interface_ids` |  list  | IDs of the instances primary network interfaces                     |
+| `network_interface_id`          |  list  | IDs of the network interface that was created with the instance     |
+| `public_dns`                    |  list  | Public DNS of the instances (or DNS of EIP)                         |
 
 ## License
 

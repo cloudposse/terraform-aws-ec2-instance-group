@@ -3,7 +3,7 @@ output "public_ips" {
   value       = "${distinct(compact(concat(aws_eip.default.*.public_ip,aws_instance.default.*.public_ip, aws_eip.additional.*.public_ip, list() )))}"
 }
 
-output "private_ip" {
+output "private_ips" {
   description = "Private IPs of instances"
   value       = "${aws_instance.default.*.private_ip}"
 }
@@ -24,7 +24,7 @@ output "public_dns" {
 }
 
 output "id" {
-  description = "Disambiguated ID list"
+  description = "Disambiguated IDs list"
   value       = "${aws_instance.default.*.id}"
 }
 
@@ -47,13 +47,13 @@ output "security_group_ids" {
   value       = "${compact(concat(list(var.create_default_security_group == "true" ? join("", aws_security_group.default.*.id) : ""), var.security_groups))}"
 }
 
-output "role" {
+output "roles" {
   description = "Name of AWS IAM Role associated with creating instance"
   value       = "${compact(aws_iam_role.default.*.name)}"
 }
 
-output "alarm" {
-  description = "CloudWatch Alarm ID"
+output "alarms" {
+  description = "CloudWatch Alarm IDs"
   value       = "${aws_cloudwatch_metric_alarm.default.*.id}"
 }
 
@@ -63,23 +63,23 @@ output "additional_eni_ids" {
 }
 
 output "ebs_ids" {
-  description = "ID of EBSs"
+  description = "IDs of EBSs"
   value       = "${aws_ebs_volume.default.*.id}"
 }
 
-output "primary_network_interface_id" {
-  description = "ID of the instance's primary network interface"
+output "primary_network_interface_ids" {
+  description = "IDs of the instance's primary network interface"
   value       = "${aws_instance.default.*.primary_network_interface_id}"
 }
 
-output "network_interface_id" {
-  description = "ID of the network interface that was created with the instance"
+output "network_interface_ids" {
+  description = "IDs of the network interface that was created with the instance"
   value       = "${aws_instance.default.*.network_interface_id}"
 }
 
 output "eips_per_instance" {
   value       = "${local.count_default_ips + local.additional_ips_count}"
-  description = "Number of EIP's per instance."
+  description = "Number of EIPs per instance."
 }
 
 output "instance_count" {
