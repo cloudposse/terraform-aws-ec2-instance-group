@@ -25,9 +25,10 @@ Include this repository as a module in your existing terraform code.
 ```hcl
 module "instance" {
   source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
-  namespace                   = "${var.namespace}"
-  name                        = "${var.name}"
-  stage                       = "${var.stage}"
+  namespace                   = "cp"
+  stage                       = "prod"
+  name                        = "app"
+  ami                         = "ami-a4dc46db"
   ssh_key_pair                = "${var.ssh_key_pair}"
   instance_type               = "${var.instance_type}"
   vpc_id                      = "${var.vpc_id}"
@@ -43,9 +44,10 @@ module "instance" {
 ```hcl
 module "kafka_instance" {
   source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
-  namespace                   = "${var.namespace}"
-  name                        = "${var.name}"
-  stage                       = "${var.stage}"
+  namespace                   = "cp"
+  stage                       = "prod"
+  name                        = "app"
+  ami                         = "ami-a4dc46db"
   ssh_key_pair                = "${var.ssh_key_pair}"
   vpc_id                      = "${var.vpc_id}"
   security_groups             = ["${var.security_groups}"]
@@ -87,7 +89,7 @@ resource "aws_ami_from_instance" "example" {
 | `name`                          |                       ``                       | Name  (e.g. `bastion` or `db`)                                                                         |   Yes    |
 | `attributes`                    |                      `[]`                      | Additional attributes (e.g. `policy` or `role`)                                                        |    No    |
 | `tags`                          |                      `{}`                      | Additional tags  (e.g. `map("BusinessUnit","XYZ")`                                                     |    No    |
-| `ami`                           |                       ``                       | By default it is the AMI provided by Amazon with Ubuntu 16.04                                          |    No    |
+| `ami`                           |                       ``                       | The AMI id                                         |    Yes    |
 | `instance_enabled`              |                     `true`                     | Flag to control the instance creation. Set to false if it is necessary to skip instance creation       |    No    |
 | `create_default_security_group` |                     `true`                     | Create default Security Group with only Egress traffic allowed                                         |    No    |
 | `ssh_key_pair`                  |                       ``                       | SSH key pair to be provisioned on the instance. If none provided, and `generate_ssh_key_pair` is true a new keypair is generated                                                         |   No    |
