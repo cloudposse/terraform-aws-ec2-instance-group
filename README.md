@@ -64,7 +64,7 @@ In /examples directory
 
 This module depends on these modules:
 
-* [terraform-null-label](https://github.com/cloudposse/terraform-null-label)
+* [terraform-terraform-label](https://github.com/cloudposse/terraform-terraform-label)
 
 It is necessary to run `terraform get` or `terraform init` to download this module.
 
@@ -136,13 +136,15 @@ resource "aws_ami_from_instance" "example" {
 | `aws_key_pair`                  | string | Name of AWS key                                                     |
 | `ssh_key_pem_path`              | string | Local path to SSH pem key                                           |
 | `security_group_id`             | string | ID of the AWS Security Group associated with the instance           |
-| `roles`                         |  list  | Name of the AWS IAM Roles associated with the instance              |
-| `alarms`                        |  list  | CloudWatch Alarm IDs                                                |
-| `additional_eni_ids`            |  map   | ENI to EIP                                                          |
+| `role_names`                    |  list  | Name of the AWS IAM Roles associated with the instance              |
+| `alarm_ids`                     |  list  | CloudWatch Alarm IDs                                                |
+| `eni_to_eip_map`                |  map   | ENI to EIP                                                          |
 | `ebs_ids`                       |  list  | IDs of EBSs                                                         |
 | `primary_network_interface_ids` |  list  | IDs of the instances primary network interfaces                     |
 | `network_interface_id`          |  list  | IDs of the network interface that was created with the instance     |
 | `public_dns`                    |  list  | Public DNS of the instances (or DNS of EIP)                         |
+| `eip_per_instance_count`        | string | Number of EIP's per instance                                        |
+
 
 ## License
 
@@ -176,7 +178,7 @@ In general, PRs are welcome. We follow the typical "fork-and-pull" Git workflow.
 
 ## License
 
-[APACHE 2.0](LICENSE) © 2016-2017 [Cloud Posse, LLC](https://cloudposse.com)
+[APACHE 2.0](LICENSE) © 2016-2018 [Cloud Posse, LLC](https://cloudposse.com)
 
     Licensed to the Apache Software Foundation (ASF) under one
     or more contributor license agreements.  See the NOTICE file

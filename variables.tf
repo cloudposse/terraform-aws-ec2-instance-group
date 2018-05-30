@@ -54,15 +54,15 @@ variable "subnet" {
 }
 
 variable "namespace" {
-  description = "Namespace (e.g. `cp` or `cloudposse`) - required for `tf_label` module"
+  description = "Namespace (e.g. `cp` or `cloudposse`) - required for `terraform-terraform-label` module"
 }
 
 variable "stage" {
-  description = "Stage (e.g. `prod`, `dev`, `staging` - required for `tf_label` module"
+  description = "Stage (e.g. `prod`, `dev`, `staging` - required for `terraform-terraform-label` module"
 }
 
 variable "name" {
-  description = "Name  (e.g. `bastion` or `db`) - required for `tf_label` module"
+  description = "Name  (e.g. `bastion` or `db`) - required for `terraform-terraform-label` module"
 }
 
 variable "delimiter" {
@@ -91,8 +91,7 @@ variable "availability_zone" {
 }
 
 variable "ami" {
-  description = "The AMI to use for the instance. By default it is the AMI provided by Amazon with Ubuntu 16.04"
-  default     = ""
+  description = "The AMI to use for the instance."
 }
 
 variable "ebs_optimized" {
@@ -110,9 +109,10 @@ variable "monitoring" {
   default     = "true"
 }
 
-variable "private_ip" {
-  description = "Private IP address to associate with the instance in the VPC"
-  default     = ""
+variable "private_ips" {
+  type        = "list"
+  description = "Private IP address to associate with the instances in the VPC"
+  default     = []
 }
 
 variable "source_dest_check" {
@@ -146,7 +146,7 @@ variable "root_iops" {
   default     = "0"
 }
 
-variable "ebs_device_name" {
+variable "ebs_device_names" {
   type        = "list"
   description = "Name of the EBS device to mount"
   default     = ["/dev/xvdb", "/dev/xvdc", "/dev/xvdd", "/dev/xvde", "/dev/xvdf", "/dev/xvdg", "/dev/xvdh", "/dev/xvdi", "/dev/xvdj", "/dev/xvdk", "/dev/xvdl", "/dev/xvdm", "/dev/xvdn", "/dev/xvdo", "/dev/xvdp", "/dev/xvdq", "/dev/xvdr", "/dev/xvds", "/dev/xvdt", "/dev/xvdu", "/dev/xvdv", "/dev/xvdw", "/dev/xvdx", "/dev/xvdy", "/dev/xvdz"]

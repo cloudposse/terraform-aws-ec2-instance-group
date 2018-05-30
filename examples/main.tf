@@ -16,14 +16,30 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = ["099720109477"] # Canonical
+}
+
 module "zero_servers" {
   source = "../"
 
   instance_count = "0"
-
-  namespace = "cp"
-  stage     = "prod"
-  name      = "zero"
+  ami            = "${data.aws_ami.ubuntu.id}"
+  namespace      = "cp"
+  stage          = "prod"
+  name           = "zero"
 
   create_default_security_group = "true"
   region                        = "${data.aws_region.default.name}"
@@ -37,10 +53,10 @@ module "one_server" {
   source = "../"
 
   instance_count = "1"
-
-  namespace = "cp"
-  stage     = "prod"
-  name      = "one"
+  ami            = "${data.aws_ami.ubuntu.id}"
+  namespace      = "cp"
+  stage          = "prod"
+  name           = "one"
 
   create_default_security_group = "true"
   region                        = "${data.aws_region.default.name}"
@@ -56,10 +72,10 @@ module "two_servers" {
   source = "../"
 
   instance_count = "2"
-
-  namespace = "cp"
-  stage     = "prod"
-  name      = "two"
+  ami            = "${data.aws_ami.ubuntu.id}"
+  namespace      = "cp"
+  stage          = "prod"
+  name           = "two"
 
   create_default_security_group = "true"
   region                        = "${data.aws_region.default.name}"
@@ -95,19 +111,27 @@ output "instance_count" {
   }
 }
 
-output "eips_per_instance" {
+output "eni_to_eip_map" {
   value = {
-    zero = "${module.zero_servers.eips_per_instance}"
-    one  = "${module.one_server.eips_per_instance}"
-    two  = "${module.two_servers.eips_per_instance}"
+    zero = "${module.zero_servers.eni_to_eip_map}"
+    one  = "${module.one_server.eni_to_eip_map}"
+    two  = "${module.two_servers.eni_to_eip_map}"
+  }
+}
+
+output "eip_per_instance_count" {
+  value = {
+    zero = "${module.zero_servers.eip_per_instance_count}"
+    one  = "${module.one_server.eip_per_instance_count}"
+    two  = "${module.two_servers.eip_per_instance_count}"
   }
 }
 
 output "private_ips" {
   value = {
-    zero = "${module.zero_servers.private_ip}"
-    one  = "${module.one_server.private_ip}"
-    two  = "${module.two_servers.private_ip}"
+    zero = "${module.zero_servers.private_ips}"
+    one  = "${module.one_server.private_ips}"
+    two  = "${module.two_servers.private_ips}"
   }
 }
 
@@ -129,9 +153,9 @@ output "aws_key_pair_name" {
 
 output "alarm" {
   value = {
-    zero = "${module.zero_servers.alarm}"
-    one  = "${module.one_server.alarm}"
-    two  = "${module.two_servers.alarm}"
+    zero = "${module.zero_servers.alarm_ids}"
+    one  = "${module.one_server.alarm_ids}"
+    two  = "${module.two_servers.alarm_ids}"
   }
 }
 

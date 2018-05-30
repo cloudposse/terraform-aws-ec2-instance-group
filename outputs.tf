@@ -20,10 +20,11 @@ locals {
 }
 
 output "public_dns" {
-  value = "${local.dns_names}"
+  value       = "${local.dns_names}"
+  description = "All public DNS records for the public interfaces and ENIs"
 }
 
-output "id" {
+output "ids" {
   description = "Disambiguated IDs list"
   value       = "${aws_instance.default.*.id}"
 }
@@ -34,7 +35,8 @@ output "aws_key_pair_name" {
 }
 
 output "new_ssh_keypair_generated" {
-  value = "${signum(length(var.ssh_key_pair)) == 1 ? "false" : "true" }"
+  value       = "${signum(length(var.ssh_key_pair)) == 1 ? "false" : "true" }"
+  description = "Was a new ssh_key_pair generated"
 }
 
 output "ssh_key_pem_path" {
@@ -47,17 +49,17 @@ output "security_group_ids" {
   value       = "${compact(concat(list(var.create_default_security_group == "true" ? join("", aws_security_group.default.*.id) : ""), var.security_groups))}"
 }
 
-output "roles" {
-  description = "Name of AWS IAM Role associated with creating instance"
+output "role_names" {
+  description = "Names of AWS IAM Roles associated with creating instance"
   value       = "${compact(aws_iam_role.default.*.name)}"
 }
 
-output "alarms" {
+output "alarm_ids" {
   description = "CloudWatch Alarm IDs"
   value       = "${aws_cloudwatch_metric_alarm.default.*.id}"
 }
 
-output "additional_eni_ids" {
+output "eni_to_eip_map" {
   description = "Map of ENI with EIP"
   value       = "${zipmap(aws_network_interface.additional.*.id, aws_eip.additional.*.public_ip)}"
 }
@@ -77,7 +79,7 @@ output "network_interface_ids" {
   value       = "${aws_instance.default.*.network_interface_id}"
 }
 
-output "eips_per_instance" {
+output "eip_per_instance_count" {
   value       = "${local.count_default_ips + local.additional_ips_count}"
   description = "Number of EIPs per instance."
 }

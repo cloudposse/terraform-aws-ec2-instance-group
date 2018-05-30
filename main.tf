@@ -5,7 +5,6 @@ locals {
   root_iops            = "${var.root_volume_type == "io1" ? var.root_iops : "0"}"
   ebs_iops             = "${var.ebs_volume_type == "io1" ? var.ebs_iops : "0"}"
   availability_zone    = "${var.availability_zone}"
-  ami                  = "${var.ami != "" ? var.ami : data.aws_ami.default.image_id}"
   root_volume_type     = "${var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type}"
   count_default_ips    = "${var.associate_public_ip_address == "true" && var.assign_eip_address == "true" && var.instance_enabled == "true" && var.instance_count > 0 ? 1 : 0}"
   ssh_key_pair_path    = "${var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path }"
@@ -30,30 +29,14 @@ data "aws_iam_policy_document" "default" {
   }
 }
 
-data "aws_ami" "default" {
-  most_recent = "true"
-
-  filter {
-    name   = "name"
-    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
-  }
-
-  filter {
-    name   = "virtualization-type"
-    values = ["hvm"]
-  }
-
-  owners = ["099720109477"]
-}
-
 data "aws_ami" "info" {
   filter {
     name   = "image-id"
-    values = ["${local.ami}"]
+    values = ["${var.ami}"]
   }
 }
 
-# Apply the tf_label module for this resource
+# Apply the terraform-terraform-label module for this resource
 module "label" {
   source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.2"
   namespace  = "${var.namespace}"
@@ -80,7 +63,7 @@ resource "aws_iam_role" "default" {
 
 resource "aws_instance" "default" {
   count                       = "${local.instance_count}"
-  ami                         = "${local.ami}"
+  ami                         = "${data.aws_ami.info.id}"
   availability_zone           = "${local.availability_zone}"
   instance_type               = "${var.instance_type}"
   ebs_optimized               = "${var.ebs_optimized}"
@@ -91,7 +74,7 @@ resource "aws_instance" "default" {
   key_name                    = "${signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name}"
   subnet_id                   = "${var.subnet}"
   monitoring                  = "${var.monitoring}"
-  private_ip                  = "${var.private_ip}"
+  private_ip                  = "${element(concat(var.private_ips, list("")), min(length(var.private_ips), count.index))}"
   source_dest_check           = "${var.source_dest_check}"
   ipv6_address_count          = "${var.ipv6_address_count}"
   ipv6_addresses              = "${var.ipv6_addresses}"
@@ -142,7 +125,7 @@ resource "aws_ebs_volume" "default" {
 
 resource "aws_volume_attachment" "default" {
   count       = "${signum(local.instance_count) == 1 ? floor(var.ebs_volume_count / max(local.instance_count, 1)) : 0 }"
-  device_name = "${element(var.ebs_device_name, count.index)}"
+  device_name = "${element(var.ebs_device_names, count.index)}"
   volume_id   = "${element(aws_ebs_volume.default.*.id, count.index)}"
   instance_id = "${aws_instance.default.id}"
 }
