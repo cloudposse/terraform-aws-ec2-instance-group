@@ -1,7 +1,7 @@
 # Restart dead or hung instance
 
 locals {
-  action = "arn:aws:swf:${var.region}:${data.aws_caller_identity.default.account_id}:${var.default_alarm_action}"
+  action = "arn:aws:swf:${local.region}:${data.aws_caller_identity.default.account_id}:${var.default_alarm_action}"
 }
 
 resource "aws_cloudwatch_metric_alarm" "default" {

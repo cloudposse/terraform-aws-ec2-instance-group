@@ -82,6 +82,7 @@ variable "tags" {
 }
 
 variable "region" {
+  default     = ""
   description = "AWS Region the instance is launched in"
 }
 

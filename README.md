@@ -9,7 +9,7 @@ Terraform Module for providing N general purpose EC2 hosts.
 
 If you only need to provision a single EC2 instance, consider using the [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) module instead.
 
-**IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc). 
+**IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc).
 
 
 Included features:
@@ -21,7 +21,7 @@ Included features:
 
 ---
 
-This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps. 
+This project is part of our comprehensive ["SweetOps"](https://docs.cloudposse.com) approach towards DevOps.
 
 
 It's 100% Open Source and licensed under the [APACHE2](LICENSE).
@@ -154,7 +154,7 @@ Available targets:
 | name | Name  (e.g. `bastion` or `db`) - required for `terraform-terraform-label` module | string | - | yes |
 | namespace | Namespace (e.g. `cp` or `cloudposse`) - required for `terraform-terraform-label` module | string | - | yes |
 | private_ips | Private IP address to associate with the instances in the VPC | list | `<list>` | no |
-| region | AWS Region the instance is launched in | string | - | yes |
+| region | AWS Region the instance is launched in | string | - | no |
 | root_iops | Amount of provisioned IOPS. This must be set if root_volume_type is set to `io1` | string | `0` | no |
 | root_volume_size | Size of the root volume in gigabytes | string | `10` | no |
 | root_volume_type | Type of root volume. Can be standard, gp2 or io1 | string | `gp2` | no |
@@ -208,7 +208,7 @@ Check out these related projects.
 
 ## References
 
-For additional context, refer to some of these links. 
+For additional context, refer to some of these links.
 
 - [terraform-aws-ec2-bastion-server](https://github.com/cloudposse/terraform-aws-ec2-bastion-server) - Terraform module to define a generic Bastion host with parameterized user_data
 
@@ -221,9 +221,9 @@ File a GitHub [issue](https://github.com/cloudposse/terraform-aws-ec2-instance-g
 
 ## Commercial Support
 
-Work directly with our team of DevOps experts via email, slack, and video conferencing. 
+Work directly with our team of DevOps experts via email, slack, and video conferencing.
 
-We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer. 
+We provide [*commercial support*][commercial_support] for all of our [Open Source][github] projects. As a *Dedicated Support* customer, you have access to our team of subject matter experts at a fraction of the cost of a full-time engineer.
 
 [![E-Mail](https://img.shields.io/badge/email-hello@cloudposse.com-blue.svg)](mailto:hello@cloudposse.com)
 
@@ -233,7 +233,7 @@ We provide [*commercial support*][commercial_support] for all of our [Open Sourc
 - **Bug Fixes.** We'll rapidly work to fix any bugs in our projects.
 - **Build New Terraform Modules.** We'll develop original modules to provision infrastructure.
 - **Cloud Architecture.** We'll assist with your cloud strategy and design.
-- **Implementation.** We'll provide hands-on support to implement our reference architectures. 
+- **Implementation.** We'll provide hands-on support to implement our reference architectures.
 
 
 ## Community Forum
@@ -267,9 +267,9 @@ Copyright © 2017-2018 [Cloud Posse, LLC](https://cloudposse.com)
 
 
 
-## License 
+## License
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
 See [LICENSE](LICENSE) for full details.
 
@@ -310,7 +310,7 @@ This project is maintained and funded by [Cloud Posse, LLC][website]. Like it? P
 
 We're a [DevOps Professional Services][hire] company based in Los Angeles, CA. We love [Open Source Software](https://github.com/cloudposse/)!
 
-We offer paid support on all of our projects.  
+We offer paid support on all of our projects.
 
 Check out [our other projects][github], [apply for a job][jobs], or [hire us][hire] to help with your cloud strategy and implementation.
 
@@ -335,5 +335,3 @@ Check out [our other projects][github], [apply for a job][jobs], or [hire us][hi
   [osterman_avatar]: https://github.com/osterman.png?size=150
   [Jamie-BitFlight_homepage]: https://github.com/Jamie-BitFlight
   [Jamie-BitFlight_avatar]: https://github.com/Jamie-BitFlight.png?size=150
-
-

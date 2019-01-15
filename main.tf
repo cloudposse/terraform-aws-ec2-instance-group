@@ -1,7 +1,7 @@
 locals {
   instance_count       = "${var.instance_enabled == "true" ? var.instance_count : 0}"
   security_group_count = "${var.create_default_security_group == "true" ? 1 : 0}"
-  region               = "${var.region}"
+  region               = "${var.region != "" ? var.region : data.aws_region.default.name}"
   root_iops            = "${var.root_volume_type == "io1" ? var.root_iops : "0"}"
   ebs_iops             = "${var.ebs_volume_type == "io1" ? var.ebs_iops : "0"}"
   availability_zone    = "${var.availability_zone}"
@@ -9,6 +9,8 @@ locals {
   count_default_ips    = "${var.associate_public_ip_address == "true" && var.assign_eip_address == "true" && var.instance_enabled == "true" && var.instance_count > 0 ? 1 : 0}"
   ssh_key_pair_path    = "${var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path }"
 }
+
+data "aws_region" "default" {}
 
 data "aws_caller_identity" "default" {}
 
@@ -90,7 +92,8 @@ resource "aws_instance" "default" {
     delete_on_termination = "${var.delete_on_termination}"
   }
 
-  tags = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
+  tags        = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
+  volume_tags = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
 }
 
 ##
@@ -124,8 +127,8 @@ resource "aws_ebs_volume" "default" {
 }
 
 resource "aws_volume_attachment" "default" {
-  count       = "${signum(local.instance_count) == 1 ? floor(var.ebs_volume_count / max(local.instance_count, 1)) : 0 }"
-  device_name = "${element(var.ebs_device_names, count.index)}"
+  count       = "${signum(local.instance_count) == 1 ? var.ebs_volume_count * local.instance_count : 0 }"
+  device_name = "${element(slice(var.ebs_device_names, 0, floor(var.ebs_volume_count * local.instance_count / max(local.instance_count, 1))), count.index)}"
   volume_id   = "${element(aws_ebs_volume.default.*.id, count.index)}"
-  instance_id = "${aws_instance.default.id}"
+  instance_id = "${element(aws_instance.default.*.id, count.index)}"
 }
