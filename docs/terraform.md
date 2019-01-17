@@ -1,4 +1,3 @@
-
 ## Inputs
 
 | Name | Description | Type | Default | Required |
@@ -13,9 +12,9 @@
 | availability_zone | Availability Zone the instance is launched in. If not set, will be launched in the first AZ of the region | string | `` | no |
 | comparison_operator | The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold. | string | `GreaterThanOrEqualToThreshold` | no |
 | create_default_security_group | Create default Security Group with only Egress traffic allowed | string | `true` | no |
-| default_alarm_action |  | string | `action/actions/AWS_EC2.InstanceId.Reboot/1.0` | no |
+| default_alarm_action | - | string | `action/actions/AWS_EC2.InstanceId.Reboot/1.0` | no |
 | delete_on_termination | Whether the volume should be destroyed on instance termination | string | `true` | no |
-| delimiter |  | string | `-` | no |
+| delimiter | - | string | `-` | no |
 | disable_api_termination | Enable EC2 Instance Termination Protection | string | `false` | no |
 | ebs_device_names | Name of the EBS device to mount | list | `<list>` | no |
 | ebs_iops | Amount of provisioned IOPS. This must be set with a volume_type of io1 | string | `0` | no |
@@ -37,7 +36,7 @@
 | name | Name  (e.g. `bastion` or `db`) - required for `terraform-terraform-label` module | string | - | yes |
 | namespace | Namespace (e.g. `cp` or `cloudposse`) - required for `terraform-terraform-label` module | string | - | yes |
 | private_ips | Private IP address to associate with the instances in the VPC | list | `<list>` | no |
-| region | AWS Region the instance is launched in | string | - | yes |
+| region | AWS Region the instance is launched in | string | `` | no |
 | root_iops | Amount of provisioned IOPS. This must be set if root_volume_type is set to `io1` | string | `0` | no |
 | root_volume_size | Size of the root volume in gigabytes | string | `10` | no |
 | root_volume_type | Type of root volume. Can be standard, gp2 or io1 | string | `gp2` | no |
@@ -51,7 +50,7 @@
 | tags | Additional tags | map | `<map>` | no |
 | user_data | Instance user data. Do not pass gzip-compressed data via this argument | string | `` | no |
 | vpc_id | The ID of the VPC that the instance security group belongs to | string | - | yes |
-| welcome_message |  | string | `` | no |
+| welcome_message | - | string | `` | no |
 
 ## Outputs
 

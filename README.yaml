@@ -45,7 +45,7 @@ description: |-
 
   If you only need to provision a single EC2 instance, consider using the [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) module instead.
 
-  **IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc). 
+  **IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc).
 
 
   Included features:
@@ -135,3 +135,5 @@ contributors:
     github: "osterman"
   - name: "Jamie Nelson"
     github: "Jamie-BitFlight"
+  - name: "Vladimir"
+    github: "SweetOps"
