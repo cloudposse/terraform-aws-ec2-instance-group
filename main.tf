@@ -92,8 +92,7 @@ resource "aws_instance" "default" {
     delete_on_termination = "${var.delete_on_termination}"
   }
 
-  tags        = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
-  volume_tags = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
+  tags = "${merge(module.label.tags, map("instance_index", "${count.index}"))}"
 }
 
 ##
