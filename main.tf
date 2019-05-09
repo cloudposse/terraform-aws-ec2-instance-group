@@ -49,7 +49,7 @@ module "label" {
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
   tags       = "${merge(map("AZ", "${local.availability_zone}"), var.tags)}"
-  enabled    = "rue"
+  enabled    = "true"
 }
 
 resource "aws_iam_instance_profile" "default" {
