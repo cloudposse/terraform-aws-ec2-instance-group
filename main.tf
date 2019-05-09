@@ -36,18 +36,20 @@ data "aws_ami" "info" {
     name   = "image-id"
     values = ["${var.ami}"]
   }
+
+  owners = ["${var.ami_owner}"]
 }
 
 # Apply the terraform-terraform-label module for this resource
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.1.2"
+  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
   namespace  = "${var.namespace}"
   stage      = "${var.stage}"
   name       = "${var.name}"
   attributes = "${var.attributes}"
   delimiter  = "${var.delimiter}"
   tags       = "${merge(map("AZ", "${local.availability_zone}"), var.tags)}"
-  enabled    = "true"
+  enabled    = "rue"
 }
 
 resource "aws_iam_instance_profile" "default" {

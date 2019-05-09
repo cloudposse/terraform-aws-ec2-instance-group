@@ -70,6 +70,7 @@ usage: |-
     stage                       = "prod"
     name                        = "app"
     ami                         = "ami-a4dc46db"
+    ami_owner                   = "099720109477"
     ssh_key_pair                = "${var.ssh_key_pair}"
     instance_type               = "${var.instance_type}"
     vpc_id                      = "${var.vpc_id}"
@@ -89,6 +90,7 @@ usage: |-
     stage                       = "prod"
     name                        = "app"
     ami                         = "ami-a4dc46db"
+    ami_owner                   = "099720109477"
     ssh_key_pair                = "${var.ssh_key_pair}"
     vpc_id                      = "${var.vpc_id}"
     security_groups             = ["${var.security_groups}"]

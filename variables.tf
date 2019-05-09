@@ -95,6 +95,10 @@ variable "ami" {
   description = "The AMI to use for the instance."
 }
 
+variable "ami_owner" {
+  description = "Owner of the given AMI"
+}
+
 variable "ebs_optimized" {
   description = "Launched EC2 instance will be EBS-optimized"
   default     = "false"
