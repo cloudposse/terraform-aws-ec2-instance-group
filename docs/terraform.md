@@ -5,6 +5,7 @@
 | additional_ips_count | Count of additional EIPs | string | `0` | no |
 | allowed_ports | List of allowed ingress ports | list | `<list>` | no |
 | ami | The AMI to use for the instance. | string | - | yes |
+| ami_owner | Owner of the given AMI | string | - | yes |
 | applying_period | The period in seconds over which the specified statistic is applied | string | `60` | no |
 | assign_eip_address | Assign an Elastic IP address to the instance | string | `true` | no |
 | associate_public_ip_address | Associate a public IP address with the instance | string | `true` | no |

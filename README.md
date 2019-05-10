@@ -53,6 +53,11 @@ We literally have [*hundreds of terraform modules*][terraform_modules] that are 
 
 ## Usage
 
+
+**IMPORTANT:** The `master` branch is used in `source` just as an example. In your code, do not pin to `master` because there may be breaking changes between releases.
+Instead pin to the release tag (e.g. `?ref=tags/x.y.z`) of one of our [latest releases](https://github.com/cloudposse/terraform-aws-ec2-instance-group/releases).
+
+
 Note: add `${var.ssh_key_pair}` private key to the `ssh agent`.
 
 Include this repository as a module in your existing terraform code.
@@ -67,6 +72,7 @@ module "instance" {
   stage                       = "prod"
   name                        = "app"
   ami                         = "ami-a4dc46db"
+  ami_owner                   = "099720109477"
   ssh_key_pair                = "${var.ssh_key_pair}"
   instance_type               = "${var.instance_type}"
   vpc_id                      = "${var.vpc_id}"
@@ -86,6 +92,7 @@ module "kafka_instance" {
   stage                       = "prod"
   name                        = "app"
   ami                         = "ami-a4dc46db"
+  ami_owner                   = "099720109477"
   ssh_key_pair                = "${var.ssh_key_pair}"
   vpc_id                      = "${var.vpc_id}"
   security_groups             = ["${var.security_groups}"]
@@ -139,6 +146,7 @@ Available targets:
 | additional_ips_count | Count of additional EIPs | string | `0` | no |
 | allowed_ports | List of allowed ingress ports | list | `<list>` | no |
 | ami | The AMI to use for the instance. | string | - | yes |
+| ami_owner | Owner of the given AMI | string | - | yes |
 | applying_period | The period in seconds over which the specified statistic is applied | string | `60` | no |
 | assign_eip_address | Assign an Elastic IP address to the instance | string | `true` | no |
 | associate_public_ip_address | Associate a public IP address with the instance | string | `true` | no |
