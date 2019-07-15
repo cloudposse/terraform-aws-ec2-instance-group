@@ -163,7 +163,6 @@ Available targets:
 | ebs_volume_count | Count of EBS volumes that will be attached to the instance | number | `0` | no |
 | ebs_volume_size | Size of the EBS volume in gigabytes | number | `10` | no |
 | ebs_volume_type | The type of EBS volume. Can be standard, gp2 or io1 | string | `gp2` | no |
-| enabled | Set to false to prevent the module from creating any resources | bool | `true` | no |
 | evaluation_periods | The number of periods over which data is compared to the specified threshold. | number | `5` | no |
 | generate_ssh_key_pair | If true, create a new key pair and save the pem for it to the current working directory | bool | `false` | no |
 | instance_count | Count of ec2 instances to create | number | `1` | no |

@@ -1,12 +1,12 @@
 locals {
-  instance_count       = var.instance_enabled == "true" ? var.instance_count : 0
-  security_group_count = var.create_default_security_group == "true" ? 1 : 0
+  instance_count       = var.instance_enabled ? var.instance_count : 0
+  security_group_count = var.create_default_security_group ? 1 : 0
   region               = var.region != "" ? var.region : data.aws_region.default.name
   root_iops            = var.root_volume_type == "io1" ? var.root_iops : "0"
   ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : "0"
   availability_zone    = var.availability_zone
   root_volume_type     = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips    = var.associate_public_ip_address == "true" && var.assign_eip_address == "true" && var.instance_enabled == "true" && var.instance_count > 0 ? 1 : 0
+  count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled && var.instance_count > 0 ? 1 : 0
   ssh_key_pair_path    = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
 }
 
@@ -42,9 +42,8 @@ data "aws_ami" "info" {
   owners = [var.ami_owner]
 }
 
-# Apply the terraform-terraform-label module for this resource
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-terraform-label.git?ref=tags/0.2.1"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.14.1"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -52,17 +51,17 @@ module "label" {
   delimiter  = var.delimiter
   tags = merge(
     {
-      "AZ" = local.availability_zone
+      AZ = local.availability_zone
     },
-    var.tags,
+    var.tags
   )
-  enabled = "true"
+  enabled = true
 }
 
 resource "aws_iam_instance_profile" "default" {
   count = signum(local.instance_count)
   name  = module.label.id
-  role  = element(aws_iam_role.default.*.name, 0)
+  role  = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role" "default" {
@@ -80,26 +79,23 @@ resource "aws_instance" "default" {
   ebs_optimized               = var.ebs_optimized
   disable_api_termination     = var.disable_api_termination
   user_data                   = var.user_data
-  iam_instance_profile        = element(aws_iam_instance_profile.default.*.name, 0)
+  iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
   key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
-  private_ip = element(
-    concat(var.private_ips, [""]),
-    min(length(var.private_ips), count.index),
-  )
-  source_dest_check  = var.source_dest_check
-  ipv6_address_count = var.ipv6_address_count
-  ipv6_addresses     = var.ipv6_addresses
+  private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
+  source_dest_check           = var.source_dest_check
+  ipv6_address_count          = var.ipv6_address_count
+  ipv6_addresses              = var.ipv6_addresses
 
   vpc_security_group_ids = compact(
     concat(
       [
-        var.create_default_security_group == "true" ? join("", aws_security_group.default.*.id) : "",
+        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
       ],
-      var.security_groups,
-    ),
+      var.security_groups
+    )
   )
 
   root_block_device {
@@ -112,8 +108,8 @@ resource "aws_instance" "default" {
   tags = merge(
     module.label.tags,
     {
-      "instance_index" = count.index
-    },
+      instance_index = count.index
+    }
   )
 }
 
@@ -122,7 +118,7 @@ resource "aws_instance" "default" {
 ##
 
 module "ssh_key_pair" {
-  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.2.3"
+  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
   namespace             = var.namespace
   stage                 = var.stage
   name                  = var.name
@@ -134,7 +130,7 @@ module "ssh_key_pair" {
 resource "aws_eip" "default" {
   count             = local.count_default_ips
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
-  vpc               = "true"
+  vpc               = true
   depends_on        = [aws_instance.default]
 }
 
