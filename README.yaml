@@ -18,9 +18,9 @@ github_repo: cloudposse/terraform-aws-ec2-instance-group
 
 # Badges to display
 badges:
-  - name: "Build Status"
-    image: "https://travis-ci.org/cloudposse/terraform-aws-ec2-instance-group.svg?branch=master"
-    url: "https://travis-ci.org/cloudposse/terraform-aws-ec2-instance-group"
+  - name: "Codefresh Build Status"
+    image: "https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-ec2-instance-group?type=cf-1"
+    url: "https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d2c103fd17b10438bdd81e2"
   - name: "Latest Release"
     image: "https://img.shields.io/github/release/cloudposse/terraform-aws-ec2-instance-group.svg"
     url: "https://github.com/cloudposse/terraform-aws-ec2-instance-group/releases/latest"
@@ -45,7 +45,7 @@ description: |-
 
   If you only need to provision a single EC2 instance, consider using the [terraform-aws-ec2-instance](https://github.com/cloudposse/terraform-aws-ec2-instance) module instead.
 
-  **IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (E.g. Kafka, Redis, etc).
+  **IMPORTANT** This module by-design does not provision an AutoScaling group. It was designed to provision a discrete number of instances suitable for running stateful services such as databases (e.g. Kafka, Redis, etc).
 
 
   Included features:
@@ -66,18 +66,17 @@ usage: |-
   ```hcl
   module "instance" {
     source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
-    namespace                   = "cp"
+    namespace                   = "eg"
     stage                       = "prod"
     name                        = "app"
     ami                         = "ami-a4dc46db"
     ami_owner                   = "099720109477"
-    ssh_key_pair                = "${var.ssh_key_pair}"
-    instance_type               = "${var.instance_type}"
-    vpc_id                      = "${var.vpc_id}"
-    security_groups             = ["${var.security_groups}"]
-    subnet                      = "${var.subnet}"
-
-    instance_count              = "3"
+    ssh_key_pair                = var.ssh_key_pair
+    instance_type               = var.instance_type
+    vpc_id                      = var.vpc_id
+    security_groups             = var.security_groups
+    subnet                      = var.subnet
+    instance_count              = 3
   }
   ```
 
@@ -86,21 +85,20 @@ usage: |-
   ```hcl
   module "kafka_instance" {
     source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
-    namespace                   = "cp"
+    namespace                   = "eg"
     stage                       = "prod"
     name                        = "app"
     ami                         = "ami-a4dc46db"
     ami_owner                   = "099720109477"
-    ssh_key_pair                = "${var.ssh_key_pair}"
-    vpc_id                      = "${var.vpc_id}"
-    security_groups             = ["${var.security_groups}"]
-    subnet                      = "${var.subnet}"
-    associate_public_ip_address = "true"
-    additional_ips_count        = "1"
-    ebs_volume_count            = "2"
-    allowed_ports               = ["22", "80", "443"]
-
-    instance_count              = "3"
+    ssh_key_pair                = var.ssh_key_pair
+    vpc_id                      = var.vpc_id
+    security_groups             = var.security_groups
+    subnet                      = var.subnet
+    associate_public_ip_address = true
+    additional_ips_count        = 1
+    ebs_volume_count            = 2
+    allowed_ports               = [22, 80, 443]
+    instance_count              = 3
   }
   ```
 
@@ -114,11 +112,12 @@ usage: |-
   It is necessary to run `terraform get` or `terraform init` to download this module.
 
   Now reference the label when creating an instance (for example):
+
   ```hcl
   resource "aws_ami_from_instance" "example" {
-    count              = "${length(module.instance.*.id)}"
-    name               = "terraform-example"
-    source_instance_id = "${element(module.instance.*.id, count.index)}"
+    count              = length(module.instance.*.id)
+    name               = "app"
+    source_instance_id = element(module.instance.*.id, count.index)
   }
   ```
 
@@ -139,3 +138,5 @@ contributors:
     github: "Jamie-BitFlight"
   - name: "Vladimir"
     github: "SweetOps"
+  - name: "Andriy Knysh"
+    github: "aknysh"
