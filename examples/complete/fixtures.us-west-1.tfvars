@@ -4,7 +4,7 @@ namespace = "eg"
 
 stage = "test"
 
-name = "ec2-instance-group"
+name = "instance-group-test"
 
 availability_zones = ["us-west-1b", "us-west-1c"]
 
