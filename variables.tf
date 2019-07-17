@@ -29,7 +29,7 @@ variable "attributes" {
 
 variable "tags" {
   type        = map(string)
-  description = "Additional tags (_e.g._ map(\"BusinessUnit\",\"ABC\")"
+  description = "Additional tags (_e.g._ { BusinessUnit : ABC })"
   default     = {}
 }
 

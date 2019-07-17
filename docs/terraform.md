@@ -48,7 +48,7 @@
 | stage | Stage (e.g. `prod`, `dev`, `staging`) | string | `` | no |
 | statistic_level | The statistic to apply to the alarm's associated metric. Allowed values are: SampleCount, Average, Sum, Minimum, Maximum | string | `Maximum` | no |
 | subnet | VPC Subnet ID the instance is launched in | string | - | yes |
-| tags | Additional tags (_e.g._ map("BusinessUnit","ABC") | map(string) | `<map>` | no |
+| tags | Additional tags (_e.g._ { BusinessUnit : ABC }) | map(string) | `<map>` | no |
 | user_data | Instance user data. Do not pass gzip-compressed data via this argument | string | `` | no |
 | vpc_id | The ID of the VPC that the instance security group belongs to | string | - | yes |
 | welcome_message | Welcome message | string | `` | no |
