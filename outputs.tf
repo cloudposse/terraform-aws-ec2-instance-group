@@ -1,15 +1,6 @@
 output "public_ips" {
   description = "List of Public IPs of instances (or EIP)"
-  value = distinct(
-    compact(
-      concat(
-        aws_eip.default.*.public_ip,
-        aws_instance.default.*.public_ip,
-        aws_eip.additional.*.public_ip,
-        []
-      )
-    )
-  )
+  value       = local.public_ips
 }
 
 output "private_ips" {
@@ -20,34 +11,6 @@ output "private_ips" {
 output "private_dns" {
   description = "Private DNS records of instances"
   value       = aws_instance.default.*.private_dns
-}
-
-locals {
-  # Split/Join used here so that the replace can be used inbetween.
-  ip_dns_list = split(
-    ",",
-    replace(
-      join(
-        ",",
-        distinct(
-          compact(
-            concat(
-              aws_eip.default.*.public_ip,
-              aws_instance.default.*.public_ip,
-              aws_eip.additional.*.public_ip,
-              []
-            )
-          )
-        )
-      ),
-      ".",
-      "-"
-    )
-  )
-  dns_names = formatlist(
-    "%v.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com",
-    distinct(compact(local.ip_dns_list))
-  )
 }
 
 output "public_dns" {

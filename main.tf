@@ -2,12 +2,30 @@ locals {
   instance_count       = var.instance_enabled ? var.instance_count : 0
   security_group_count = var.create_default_security_group ? 1 : 0
   region               = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops            = var.root_volume_type == "io1" ? var.root_iops : "0"
-  ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : "0"
+  root_iops            = var.root_volume_type == "io1" ? var.root_iops : 0
+  ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
   availability_zone    = var.availability_zone
   root_volume_type     = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
   count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled && var.instance_count > 0 ? 1 : 0
   ssh_key_pair_path    = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+}
+
+locals {
+  public_ips = distinct(
+    compact(
+      concat(
+        coalescelist(aws_eip.default.*.public_ip, [""]),
+        coalescelist(aws_instance.default.*.public_ip, [""]),
+        coalescelist(aws_eip.additional.*.public_ip, [""])
+      )
+    )
+  )
+
+  ip_dns_list = split(",", replace(join(",", local.public_ips), ".", "-"))
+
+  dns_names = formatlist(
+    "%v.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com", distinct(compact(local.ip_dns_list))
+  )
 }
 
 data "aws_region" "default" {
