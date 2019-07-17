@@ -22,7 +22,7 @@ locals {
   ip_dns_list = split(",", replace(join(",", local.public_ips), ".", "-"))
 
   dns_names = formatlist(
-    "%v.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com", distinct(compact(local.ip_dns_list))
+    "%v.${var.region == "us-east-1" ? "compute-1" : "${var.region}.compute"}.amazonaws.com", compact(local.ip_dns_list)
   )
 }
 
