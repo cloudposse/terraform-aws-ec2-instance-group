@@ -11,7 +11,7 @@
 | associate_public_ip_address | Associate a public IP address with the instance | bool | `true` | no |
 | attributes | Additional attributes (_e.g._ "1") | list(string) | `<list>` | no |
 | availability_zone | Availability Zone the instance is launched in. If not set, will be launched in the first AZ of the region | string | `` | no |
-| comparison_operator | The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold. | string | `GreaterThanOrEqualToThreshold` | no |
+| comparison_operator | The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold | string | `GreaterThanOrEqualToThreshold` | no |
 | create_default_security_group | Create default Security Group with only Egress traffic allowed | bool | `true` | no |
 | default_alarm_action | Default alarm action | string | `action/actions/AWS_EC2.InstanceId.Reboot/1.0` | no |
 | delete_on_termination | Whether the volume should be destroyed on instance termination | bool | `true` | no |
@@ -23,7 +23,7 @@
 | ebs_volume_count | Count of EBS volumes that will be attached to the instance | number | `0` | no |
 | ebs_volume_size | Size of the EBS volume in gigabytes | number | `10` | no |
 | ebs_volume_type | The type of EBS volume. Can be standard, gp2 or io1 | string | `gp2` | no |
-| evaluation_periods | The number of periods over which data is compared to the specified threshold. | number | `5` | no |
+| evaluation_periods | The number of periods over which data is compared to the specified threshold | number | `5` | no |
 | generate_ssh_key_pair | If true, create a new key pair and save the pem for it to the current working directory | bool | `false` | no |
 | instance_count | Count of ec2 instances to create | number | `1` | no |
 | instance_enabled | Flag to control the instance creation. Set to false if it is necessary to skip instance creation | bool | `true` | no |

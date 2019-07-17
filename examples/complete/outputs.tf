@@ -1,23 +1,3 @@
-output "key_name" {
-  value       = module.aws_key_pair.key_name
-  description = "Name of SSH key"
-}
-
-output "public_key" {
-  value       = module.aws_key_pair.public_key
-  description = "Content of the generated public key"
-}
-
-output "public_key_filename" {
-  description = "Public Key Filename"
-  value       = module.aws_key_pair.public_key_filename
-}
-
-output "private_key_filename" {
-  description = "Private Key Filename"
-  value       = module.aws_key_pair.private_key_filename
-}
-
 output "public_subnet_cidrs" {
   description = "Public subnet CIDRs"
   value       = module.subnets.public_subnet_cidrs
@@ -33,57 +13,87 @@ output "vpc_cidr" {
   value       = module.vpc.vpc_cidr_block
 }
 
-output "public_ip" {
-  description = "Public IP of instance (or EIP)"
-  value       = module.ec2_instance.public_ip
+output "public_ips" {
+  description = "List of Public IPs of instances (or EIP)"
+  value       = module.ec2_instance_group.public_ips
 }
 
-output "private_ip" {
-  description = "Private IP of instance"
-  value       = module.ec2_instance.private_ip
+output "private_ips" {
+  description = "Private IPs of instances"
+  value       = module.ec2_instance_group.private_ips
 }
 
 output "private_dns" {
-  description = "Private DNS of instance"
-  value       = module.ec2_instance.private_dns
+  description = "Private DNS records of instances"
+  value       = module.ec2_instance_group.private_dns
 }
 
 output "public_dns" {
-  description = "Public DNS of instance (or DNS of EIP)"
-  value       = module.ec2_instance.public_dns
+  value       = module.ec2_instance_group.public_dns
+  description = "All public DNS records for the public interfaces and ENIs"
 }
 
-output "id" {
-  description = "Disambiguated ID of the instance"
-  value       = module.ec2_instance.id
+output "ids" {
+  description = "Disambiguated IDs list"
+  value       = module.ec2_instance_group.ids
 }
 
-output "ssh_key_pair" {
-  description = "Name of the SSH key pair provisioned on the instance"
-  value       = module.ec2_instance.ssh_key_pair
+output "aws_key_pair_name" {
+  description = "Name of AWS key pair"
+  value       = module.ec2_instance_group.aws_key_pair_name
+}
+
+output "new_ssh_keypair_generated" {
+  value       = module.ec2_instance_group.new_ssh_keypair_generated
+  description = "Was a new ssh_key_pair generated"
+}
+
+output "ssh_key_pem_path" {
+  description = "Path where SSH key pair was created (if applicable)"
+  value       = module.ec2_instance_group.ssh_key_pem_path
 }
 
 output "security_group_ids" {
-  description = "IDs on the AWS Security Groups associated with the instance"
-  value       = module.ec2_instance.security_group_ids
+  description = "ID on the new AWS Security Group associated with creating instance"
+  value       = module.ec2_instance_group.security_group_ids
 }
 
-output "role" {
-  description = "Name of AWS IAM Role associated with the instance"
-  value       = module.ec2_instance.role
+output "role_names" {
+  description = "Names of AWS IAM Roles associated with creating instance"
+  value       = module.ec2_instance_group.role_names
 }
 
-output "additional_eni_ids" {
-  description = "Map of ENI to EIP"
-  value       = module.ec2_instance.additional_eni_ids
+output "alarm_ids" {
+  description = "CloudWatch Alarm IDs"
+  value       = module.ec2_instance_group.alarm_ids
+}
+
+output "eni_to_eip_map" {
+  description = "Map of ENI with EIP"
+  value       = module.ec2_instance_group.eni_to_eip_map
 }
 
 output "ebs_ids" {
   description = "IDs of EBSs"
-  value       = module.ec2_instance.ebs_ids
+  value       = module.ec2_instance_group.ebs_ids
 }
 
-output "primary_network_interface_id" {
-  description = "ID of the instance's primary network interface"
-  value       = module.ec2_instance.primary_network_interface_id
+output "primary_network_interface_ids" {
+  description = "IDs of the instance's primary network interface"
+  value       = module.ec2_instance_group.primary_network_interface_ids
+}
+
+output "network_interface_ids" {
+  description = "IDs of the network interface that was created with the instance"
+  value       = module.ec2_instance_group.network_interface_ids
+}
+
+output "eip_per_instance_count" {
+  value       = module.ec2_instance_group.eip_per_instance_count
+  description = "Number of EIPs per instance"
+}
+
+output "instance_count" {
+  value       = module.ec2_instance_group.instance_count
+  description = "Total number of instances created"
 }

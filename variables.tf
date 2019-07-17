@@ -222,7 +222,7 @@ variable "welcome_message" {
 
 variable "comparison_operator" {
   type        = string
-  description = "The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold."
+  description = "The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold"
   default     = "GreaterThanOrEqualToThreshold"
 }
 
@@ -234,7 +234,7 @@ variable "metric_name" {
 
 variable "evaluation_periods" {
   type        = number
-  description = "The number of periods over which data is compared to the specified threshold."
+  description = "The number of periods over which data is compared to the specified threshold"
   default     = 5
 }
 

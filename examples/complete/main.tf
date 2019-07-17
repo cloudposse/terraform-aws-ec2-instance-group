@@ -2,15 +2,6 @@ provider "aws" {
   region = var.region
 }
 
-module "aws_key_pair" {
-  source              = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
-  namespace           = var.namespace
-  stage               = var.stage
-  name                = var.name
-  ssh_public_key_path = var.ssh_public_key_path
-  generate_ssh_key    = true
-}
-
 module "vpc" {
   source     = "git::https://github.com/cloudposse/terraform-aws-vpc.git?ref=tags/0.7.0"
   namespace  = var.namespace
@@ -32,18 +23,41 @@ module "subnets" {
   nat_instance_enabled = false
 }
 
+data "aws_ami" "ubuntu" {
+  most_recent = true
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-xenial-16.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+
+  owners = [var.ami_owner]
+}
+
 module "ec2_instance_group" {
-  source                      = "../../"
-  namespace                   = var.namespace
-  stage                       = var.stage
-  name                        = var.name
-  region                      = var.region
-  ssh_key_pair                = module.aws_key_pair.key_name
-  vpc_id                      = module.vpc.vpc_id
-  subnet                      = module.subnets.private_subnet_ids[0]
-  security_groups             = [module.vpc.vpc_default_security_group_id]
-  assign_eip_address          = var.assign_eip_address
-  associate_public_ip_address = var.associate_public_ip_address
-  instance_type               = var.instance_type
-  allowed_ports               = var.allowed_ports
+  source                        = "../../"
+  namespace                     = var.namespace
+  stage                         = var.stage
+  name                          = var.name
+  region                        = var.region
+  ami                           = data.aws_ami.ubuntu.id
+  ami_owner                     = var.ami_owner
+  vpc_id                        = module.vpc.vpc_id
+  subnet                        = module.subnets.private_subnet_ids[0]
+  security_groups               = [module.vpc.vpc_default_security_group_id]
+  assign_eip_address            = var.assign_eip_address
+  associate_public_ip_address   = var.associate_public_ip_address
+  instance_type                 = var.instance_type
+  instance_count                = var.instance_count
+  allowed_ports                 = var.allowed_ports
+  create_default_security_group = var.create_default_security_group
+  generate_ssh_key_pair         = var.generate_ssh_key_pair
+  root_volume_type              = var.root_volume_type
+  root_volume_size              = var.root_volume_size
+  delete_on_termination         = var.delete_on_termination
 }
