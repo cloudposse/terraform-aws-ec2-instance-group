@@ -1,94 +1,99 @@
+output "public_subnet_cidrs" {
+  description = "Public subnet CIDRs"
+  value       = module.subnets.public_subnet_cidrs
+}
+
+output "private_subnet_cidrs" {
+  description = "Private subnet CIDRs"
+  value       = module.subnets.private_subnet_cidrs
+}
+
+output "vpc_cidr" {
+  description = "VPC CIDR"
+  value       = module.vpc.vpc_cidr_block
+}
+
 output "public_ips" {
   description = "List of Public IPs of instances (or EIP)"
-  value       = local.public_ips
+  value       = module.ec2_instance_group.public_ips
 }
 
 output "private_ips" {
   description = "Private IPs of instances"
-  value       = aws_instance.default.*.private_ip
+  value       = module.ec2_instance_group.private_ips
 }
 
 output "private_dns" {
   description = "Private DNS records of instances"
-  value       = aws_instance.default.*.private_dns
+  value       = module.ec2_instance_group.private_dns
 }
 
 output "public_dns" {
-  value       = local.dns_names
+  value       = module.ec2_instance_group.public_dns
   description = "All public DNS records for the public interfaces and ENIs"
 }
 
 output "ids" {
   description = "Disambiguated IDs list"
-  value       = aws_instance.default.*.id
+  value       = module.ec2_instance_group.ids
 }
 
 output "aws_key_pair_name" {
   description = "Name of AWS key pair"
-  value       = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : ""
+  value       = module.ec2_instance_group.aws_key_pair_name
 }
 
 output "new_ssh_keypair_generated" {
-  value       = signum(length(var.ssh_key_pair)) == 1 ? false : true
+  value       = module.ec2_instance_group.new_ssh_keypair_generated
   description = "Was a new ssh_key_pair generated"
 }
 
 output "ssh_key_pem_path" {
   description = "Path where SSH key pair was created (if applicable)"
-  value       = "${local.ssh_key_pair_path}/${module.ssh_key_pair.key_name}.pem"
+  value       = module.ec2_instance_group.ssh_key_pem_path
 }
 
 output "security_group_ids" {
   description = "ID on the new AWS Security Group associated with creating instance"
-  value = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
+  value       = module.ec2_instance_group.security_group_ids
 }
 
 output "role_names" {
   description = "Names of AWS IAM Roles associated with creating instance"
-  value       = compact(aws_iam_role.default.*.name)
+  value       = module.ec2_instance_group.role_names
 }
 
 output "alarm_ids" {
   description = "CloudWatch Alarm IDs"
-  value       = aws_cloudwatch_metric_alarm.default.*.id
+  value       = module.ec2_instance_group.alarm_ids
 }
 
 output "eni_to_eip_map" {
   description = "Map of ENI with EIP"
-  value = zipmap(
-    aws_network_interface.additional.*.id,
-    aws_eip.additional.*.public_ip
-  )
+  value       = module.ec2_instance_group.eni_to_eip_map
 }
 
 output "ebs_ids" {
   description = "IDs of EBSs"
-  value       = aws_ebs_volume.default.*.id
+  value       = module.ec2_instance_group.ebs_ids
 }
 
 output "primary_network_interface_ids" {
   description = "IDs of the instance's primary network interface"
-  value       = aws_instance.default.*.primary_network_interface_id
+  value       = module.ec2_instance_group.primary_network_interface_ids
 }
 
 output "network_interface_ids" {
   description = "IDs of the network interface that was created with the instance"
-  value       = aws_instance.default.*.network_interface_id
+  value       = module.ec2_instance_group.network_interface_ids
 }
 
 output "eip_per_instance_count" {
-  value       = local.count_default_ips + local.additional_ips_count
-  description = "Number of EIPs per instance."
+  value       = module.ec2_instance_group.eip_per_instance_count
+  description = "Number of EIPs per instance"
 }
 
 output "instance_count" {
-  value       = local.instance_count
+  value       = module.ec2_instance_group.instance_count
   description = "Total number of instances created"
 }
