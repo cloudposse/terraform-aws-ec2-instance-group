@@ -23,6 +23,7 @@
 | ebs_volume_count | Count of EBS volumes that will be attached to the instance | number | `0` | no |
 | ebs_volume_size | Size of the EBS volume in gigabytes | number | `10` | no |
 | ebs_volume_type | The type of EBS volume. Can be standard, gp2 or io1 | string | `gp2` | no |
+| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | string | `` | no |
 | evaluation_periods | The number of periods over which data is compared to the specified threshold | number | `5` | no |
 | generate_ssh_key_pair | If true, create a new key pair and save the pem for it to the current working directory | bool | `false` | no |
 | instance_count | Count of ec2 instances to create | number | `1` | no |
@@ -36,6 +37,7 @@
 | monitoring | Launched EC2 instance will have detailed monitoring enabled | bool | `true` | no |
 | name | Name of the application | string | - | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | string | `` | no |
+| permissions_boundary_arn | Policy ARN to attach to instance role as a permissions boundary | string | `` | no |
 | private_ips | Private IP address to associate with the instances in the VPC | list(string) | `<list>` | no |
 | region | AWS Region the instance is launched in | string | - | yes |
 | root_iops | Amount of provisioned IOPS. This must be set if root_volume_type is set to `io1` | number | `0` | no |
@@ -64,6 +66,7 @@
 | eni_to_eip_map | Map of ENI with EIP |
 | ids | Disambiguated IDs list |
 | instance_count | Total number of instances created |
+| name | Instance(s) name |
 | network_interface_ids | IDs of the network interface that was created with the instance |
 | new_ssh_keypair_generated | Was a new ssh_key_pair generated |
 | primary_network_interface_ids | IDs of the instance's primary network interface |
