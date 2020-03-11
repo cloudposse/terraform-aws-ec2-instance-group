@@ -297,3 +297,9 @@ variable "instance_count" {
   description = "Count of ec2 instances to create"
   default     = 1
 }
+
+variable "permissions_boundary_arn" {
+  type        = string
+  description = "Policy ARN to attach to instance role as a permissions boundary"
+  default     = ""
+}

@@ -82,10 +82,11 @@ resource "aws_iam_instance_profile" "default" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = signum(local.instance_count)
-  name               = module.label.id
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.default.json
+  count                = signum(local.instance_count)
+  name                 = module.label.id
+  path                 = "/"
+  assume_role_policy   = data.aws_iam_policy_document.default.json
+  permissions_boundary = length(var.permissions_boundary_arn) > 0 ? var.permissions_boundary_arn : null
 }
 
 resource "aws_instance" "default" {
