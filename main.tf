@@ -100,7 +100,7 @@ resource "aws_instance" "default" {
   key_name                    = var.ssh_key_pair
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
-  private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
+  #private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
