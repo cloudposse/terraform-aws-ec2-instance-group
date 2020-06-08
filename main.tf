@@ -97,7 +97,7 @@ resource "aws_instance" "default" {
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
+  key_name                    = var.ssh_key_pair
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
@@ -133,7 +133,7 @@ resource "aws_instance" "default" {
 ## Create keypair if one isn't provided
 ##
 
-module "ssh_key_pair" {
+/* module "ssh_key_pair" {
   source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
   namespace             = var.namespace
   stage                 = var.stage
@@ -142,7 +142,7 @@ module "ssh_key_pair" {
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
 }
-
+ */
 resource "aws_eip" "default" {
   count             = local.count_default_ips
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
