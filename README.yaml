@@ -1,4 +1,3 @@
----
 #
 # This is the canonical configuration for the `README.md`
 # Run `make readme` to rebuild the `README.md`
@@ -6,28 +5,21 @@
 
 # Name of this project
 name: terraform-aws-ec2-instance-group
-
 # Logo for this project
 #logo: docs/logo.png
 
 # License of this project
 license: "APACHE2"
-
 # Canonical GitHub repo
 github_repo: cloudposse/terraform-aws-ec2-instance-group
-
 # Badges to display
 badges:
-  - name: "Codefresh Build Status"
-    image: "https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-ec2-instance-group?type=cf-1"
-    url: "https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d2c103fd17b10438bdd81e2"
   - name: "Latest Release"
     image: "https://img.shields.io/github/release/cloudposse/terraform-aws-ec2-instance-group.svg"
     url: "https://github.com/cloudposse/terraform-aws-ec2-instance-group/releases/latest"
   - name: "Slack Community"
     image: "https://slack.cloudposse.com/badge.svg"
     url: "https://slack.cloudposse.com"
-
 related:
   - name: "terraform-aws-ec2-instance"
     description: "Terraform Module for providing a general EC2 instance provisioned by Ansible"
@@ -38,7 +30,6 @@ related:
   - name: "https://github.com/cloudposse/terraform-aws-rds-cluster"
     description: "Terraform module to provision an RDS Aurora cluster for MySQL or Postgres"
     url: "https://github.com/cloudposse/terraform-aws-rds-cluster"
-
 # Short description of this project
 description: |-
   Terraform Module for providing N general purpose EC2 hosts.
@@ -53,7 +44,6 @@ description: |-
   * Option to switch EIP attachment
   * CloudWatch monitoring and automatic reboot if instance hangs
   * Assume Role capability
-
 # How to use this project
 usage: |-
   Note: add `${var.ssh_key_pair}` private key to the `ssh agent`.
@@ -120,16 +110,13 @@ usage: |-
     source_instance_id = element(module.instance.*.id, count.index)
   }
   ```
-
 references:
   - name: "terraform-aws-ec2-bastion-server"
     description: "Terraform module to define a generic Bastion host with parameterized user_data"
     url: "https://github.com/cloudposse/terraform-aws-ec2-bastion-server"
-
 include:
   - "docs/targets.md"
   - "docs/terraform.md"
-
 # Contributors to this project
 contributors:
   - name: "Erik Osterman"
