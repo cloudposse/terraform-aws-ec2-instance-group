@@ -10,6 +10,12 @@ variable "stage" {
   default     = ""
 }
 
+variable "environment" {
+  type        = string
+  description = "Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT'"
+  default     = ""
+}
+
 variable "name" {
   type        = string
   description = "Name of the application"
@@ -290,4 +296,10 @@ variable "instance_count" {
   type        = number
   description = "Count of ec2 instances to create"
   default     = 1
+}
+
+variable "permissions_boundary_arn" {
+  type        = string
+  description = "Policy ARN to attach to instance role as a permissions boundary"
+  default     = ""
 }

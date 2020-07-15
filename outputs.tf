@@ -23,6 +23,11 @@ output "ids" {
   value       = aws_instance.default.*.id
 }
 
+output "name" {
+  description = "Instance(s) name"
+  value       = module.label.id
+}
+
 output "aws_key_pair_name" {
   description = "Name of AWS key pair"
   value       = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : ""

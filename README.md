@@ -217,6 +217,7 @@ Available targets:
 | ebs\_volume\_count | Count of EBS volumes that will be attached to the instance | `number` | `0` | no |
 | ebs\_volume\_size | Size of the EBS volume in gigabytes | `number` | `10` | no |
 | ebs\_volume\_type | The type of EBS volume. Can be standard, gp2 or io1 | `string` | `"gp2"` | no |
+| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | `string` | `""` | no |
 | evaluation\_periods | The number of periods over which data is compared to the specified threshold | `number` | `5` | no |
 | generate\_ssh\_key\_pair | If true, create a new key pair and save the pem for it to the current working directory | `bool` | `false` | no |
 | instance\_count | Count of ec2 instances to create | `number` | `1` | no |
@@ -230,6 +231,7 @@ Available targets:
 | monitoring | Launched EC2 instance will have detailed monitoring enabled | `bool` | `true` | no |
 | name | Name of the application | `string` | n/a | yes |
 | namespace | Namespace (e.g. `eg` or `cp`) | `string` | `""` | no |
+| permissions\_boundary\_arn | Policy ARN to attach to instance role as a permissions boundary | `string` | `""` | no |
 | private\_ips | Private IP address to associate with the instances in the VPC | `list(string)` | `[]` | no |
 | region | AWS Region the instance is launched in | `string` | n/a | yes |
 | root\_iops | Amount of provisioned IOPS. This must be set if root\_volume\_type is set to `io1` | `number` | `0` | no |
@@ -258,6 +260,7 @@ Available targets:
 | eni\_to\_eip\_map | Map of ENI with EIP |
 | ids | Disambiguated IDs list |
 | instance\_count | Total number of instances created |
+| name | Instance(s) name |
 | network\_interface\_ids | IDs of the network interface that was created with the instance |
 | new\_ssh\_keypair\_generated | Was a new ssh\_key\_pair generated |
 | primary\_network\_interface\_ids | IDs of the instance's primary network interface |
@@ -423,8 +426,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
 
 ### Contributors
 
-|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Jamie Nelson][Jamie-BitFlight_avatar]][Jamie-BitFlight_homepage]<br/>[Jamie Nelson][Jamie-BitFlight_homepage] | [![Vladimir][SweetOps_avatar]][SweetOps_homepage]<br/>[Vladimir][SweetOps_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] |
-|---|---|---|---|
+|  [![Erik Osterman][osterman_avatar]][osterman_homepage]<br/>[Erik Osterman][osterman_homepage] | [![Jamie Nelson][Jamie-BitFlight_avatar]][Jamie-BitFlight_homepage]<br/>[Jamie Nelson][Jamie-BitFlight_homepage] | [![Vladimir][SweetOps_avatar]][SweetOps_homepage]<br/>[Vladimir][SweetOps_homepage] | [![Andriy Knysh][aknysh_avatar]][aknysh_homepage]<br/>[Andriy Knysh][aknysh_homepage] | [![Chris Weyl][rsrchboy_avatar]][rsrchboy_homepage]<br/>[Chris Weyl][rsrchboy_homepage] |
+|---|---|---|---|---|
 
   [osterman_homepage]: https://github.com/osterman
   [osterman_avatar]: https://img.cloudposse.com/150x150/https://github.com/osterman.png
@@ -434,6 +437,8 @@ Check out [our other projects][github], [follow us on twitter][twitter], [apply 
   [SweetOps_avatar]: https://img.cloudposse.com/150x150/https://github.com/SweetOps.png
   [aknysh_homepage]: https://github.com/aknysh
   [aknysh_avatar]: https://img.cloudposse.com/150x150/https://github.com/aknysh.png
+  [rsrchboy_homepage]: https://github.com/rsrchboy
+  [rsrchboy_avatar]: https://img.cloudposse.com/150x150/https://github.com/rsrchboy.png
 
 [![README Footer][readme_footer_img]][readme_footer_link]
 [![Beacon][beacon]][website]

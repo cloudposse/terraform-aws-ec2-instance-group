@@ -59,12 +59,13 @@ data "aws_ami" "info" {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.14.1"
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.name
-  attributes = var.attributes
-  delimiter  = var.delimiter
+  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.16.0"
+  namespace   = var.namespace
+  stage       = var.stage
+  environment = var.environment
+  name        = var.name
+  attributes  = var.attributes
+  delimiter   = var.delimiter
   tags = merge(
     {
       AZ = local.availability_zone
@@ -81,10 +82,11 @@ resource "aws_iam_instance_profile" "default" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = signum(local.instance_count)
-  name               = module.label.id
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.default.json
+  count                = signum(local.instance_count)
+  name                 = module.label.id
+  path                 = "/"
+  assume_role_policy   = data.aws_iam_policy_document.default.json
+  permissions_boundary = length(var.permissions_boundary_arn) > 0 ? var.permissions_boundary_arn : null
 }
 
 resource "aws_instance" "default" {
@@ -102,8 +104,8 @@ resource "aws_instance" "default" {
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
-  ipv6_address_count          = var.ipv6_address_count
-  ipv6_addresses              = var.ipv6_addresses
+  ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
+  ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
 
   vpc_security_group_ids = compact(
     concat(
@@ -134,8 +136,9 @@ resource "aws_instance" "default" {
 ##
 
 module "ssh_key_pair" {
-  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
+  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.9.0"
   namespace             = var.namespace
+  environment           = var.environment
   stage                 = var.stage
   name                  = var.name
   ssh_public_key_path   = local.ssh_key_pair_path
