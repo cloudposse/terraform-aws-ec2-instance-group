@@ -42,7 +42,7 @@
 
 [![Cloud Posse][logo]](https://cpco.io/homepage)
 
-# terraform-aws-ec2-instance-group [![Codefresh Build Status](https://g.codefresh.io/api/badges/pipeline/cloudposse/terraform-modules%2Fterraform-aws-ec2-instance-group?type=cf-1)](https://g.codefresh.io/public/accounts/cloudposse/pipelines/5d2c103fd17b10438bdd81e2) [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-ec2-instance-group.svg)](https://github.com/cloudposse/terraform-aws-ec2-instance-group/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
+# terraform-aws-ec2-instance-group [![Latest Release](https://img.shields.io/github/release/cloudposse/terraform-aws-ec2-instance-group.svg)](https://github.com/cloudposse/terraform-aws-ec2-instance-group/releases/latest) [![Slack Community](https://slack.cloudposse.com/badge.svg)](https://slack.cloudposse.com)
 
 
 Terraform Module for providing N general purpose EC2 hosts.
