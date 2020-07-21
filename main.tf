@@ -127,6 +127,9 @@ resource "aws_instance" "default" {
       instance_index = count.index
     }
   )
+  lifecycle {
+    ignore_changes = [user_data]
+  }
 }
 
 ##
