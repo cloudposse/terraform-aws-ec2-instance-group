@@ -13,8 +13,7 @@ locals {
 locals {
   public_ips = compact(
     concat(
-      coalescelist(aws_eip.default.*.public_ip, [""]),
-      coalescelist(aws_instance.default.*.public_ip, [""]),
+      coalescelist(aws_eip.default.*.public_ip, aws_instance.default.*.public_ip),
       coalescelist(aws_eip.additional.*.public_ip, [""])
     )
   )
