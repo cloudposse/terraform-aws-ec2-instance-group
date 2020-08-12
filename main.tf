@@ -88,11 +88,6 @@ resource "aws_iam_role" "default" {
 }
 
 resource "aws_instance" "default" {
-
-variable "hibernation" {
-  default     = "true"
-  description = "this adds in hiberation"
-}
   count                       = local.instance_count
   ami                         = data.aws_ami.info.id
   availability_zone           = local.availability_zone
