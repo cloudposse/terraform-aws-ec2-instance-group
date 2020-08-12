@@ -88,6 +88,11 @@ resource "aws_iam_role" "default" {
 }
 
 resource "aws_instance" "default" {
+
+variable "hibernation" {
+  default     = "true"
+  description = "this adds in hiberation"
+}
   count                       = local.instance_count
   ami                         = data.aws_ami.info.id
   availability_zone           = local.availability_zone
@@ -120,6 +125,7 @@ resource "aws_instance" "default" {
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
+    encrypted             = var.encrypted
   }
 
   tags = merge(

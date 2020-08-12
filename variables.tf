@@ -297,3 +297,7 @@ variable "hibernation" {
   description = "this will all for hibernation"
 }
 
+variable "encrypted" {
+  default = true
+  description = "encrypts root volume of instance"
+}
