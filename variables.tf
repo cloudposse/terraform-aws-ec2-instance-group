@@ -291,3 +291,9 @@ variable "instance_count" {
   description = "Count of ec2 instances to create"
   default     = 1
 }
+
+variable "hibernation" {
+  default = true
+  description = "this will all for hibernation"
+}
+
