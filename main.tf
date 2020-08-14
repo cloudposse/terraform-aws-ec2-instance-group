@@ -6,15 +6,14 @@ locals {
   ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
   availability_zone    = var.availability_zone
   root_volume_type     = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled && var.instance_count > 0 ? 1 : 0
+  count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled ? var.instance_count : 0
   ssh_key_pair_path    = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
 }
 
 locals {
   public_ips = compact(
     concat(
-      coalescelist(aws_eip.default.*.public_ip, [""]),
-      coalescelist(aws_instance.default.*.public_ip, [""]),
+      coalescelist(aws_eip.default.*.public_ip, aws_instance.default.*.public_ip),
       coalescelist(aws_eip.additional.*.public_ip, [""])
     )
   )
