@@ -159,6 +159,7 @@ Available targets:
 
 ```
 <!-- markdownlint-restore -->
+<!-- markdownlint-disable -->
 ## Requirements
 
 | Name | Version |
@@ -254,6 +255,7 @@ Available targets:
 | security\_group\_ids | ID on the new AWS Security Group associated with creating instance |
 | ssh\_key\_pem\_path | Path where SSH key pair was created (if applicable) |
 
+<!-- markdownlint-restore -->
 
 
 
