@@ -119,6 +119,7 @@ resource "aws_instance" "default" {
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
+    encrypted             = var.encrypted
   }
 
   tags = merge(

@@ -291,3 +291,9 @@ variable "instance_count" {
   description = "Count of ec2 instances to create"
   default     = 1
 }
+
+
+variable "encrypted" {
+  description = "this sets up encrypted root devices"
+  default     = false
+}
