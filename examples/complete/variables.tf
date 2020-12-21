@@ -8,21 +8,6 @@ variable "availability_zones" {
   description = "List of availability zones"
 }
 
-variable "namespace" {
-  type        = string
-  description = "Namespace (e.g. `eg` or `cp`)"
-}
-
-variable "stage" {
-  type        = string
-  description = "Stage (e.g. `prod`, `dev`, `staging`, `infra`)"
-}
-
-variable "name" {
-  type        = string
-  description = "Name  (e.g. `app` or `cluster`)"
-}
-
 variable "generate_ssh_key_pair" {
   type        = bool
   description = "If true, create a new key pair and save the pem for it to the current working directory"
