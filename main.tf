@@ -59,7 +59,7 @@ data "aws_ami" "info" {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.14.1"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.22.1"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
