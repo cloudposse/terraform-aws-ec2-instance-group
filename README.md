@@ -263,7 +263,6 @@ Available targets:
 | ids | Disambiguated IDs list |
 | instance\_count | Total number of instances created |
 | name | Instance(s) name |
-| network\_interface\_ids | IDs of the network interface that was created with the instance |
 | new\_ssh\_keypair\_generated | Was a new ssh\_key\_pair generated |
 | primary\_network\_interface\_ids | IDs of the instance's primary network interface |
 | private\_dns | Private DNS records of instances |
