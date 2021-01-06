@@ -58,20 +58,11 @@ data "aws_ami" "info" {
 }
 
 module "label" {
-  source      = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.17.0"
-  namespace   = var.namespace
-  stage       = var.stage
-  environment = var.environment
-  name        = var.name
-  attributes  = var.attributes
-  delimiter   = var.delimiter
-  tags = merge(
-    {
-      AZ = local.availability_zone
-    },
-    var.tags
-  )
-  enabled = true
+  source  = "cloudposse/label/null"
+  version = "0.22.0"
+  tags    = { AZ = local.availability_zone }
+
+  context = module.this.context
 }
 
 resource "aws_iam_instance_profile" "default" {
@@ -135,14 +126,13 @@ resource "aws_instance" "default" {
 ##
 
 module "ssh_key_pair" {
-  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.14.0"
-  namespace             = var.namespace
-  environment           = var.environment
-  stage                 = var.stage
-  name                  = var.name
+  source                = "cloudposse/key-pair/aws"
+  version               = "0.16.1"
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
+
+  context = module.this.context
 }
 
 resource "aws_eip" "default" {

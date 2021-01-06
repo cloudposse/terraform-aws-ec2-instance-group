@@ -3,35 +3,37 @@
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.0, < 0.14.0 |
-| aws | ~> 2.0 |
-| null | ~> 2.0 |
-| tls | ~> 2.0 |
+| terraform | >= 0.12.26 |
+| aws | >= 2.0 |
+| null | >= 2.0 |
+| tls | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| aws | ~> 2.0 |
+| aws | >= 2.0 |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | additional\_ips\_count | Count of additional EIPs | `number` | `0` | no |
+| additional\_tag\_map | Additional tags for appending to tags\_as\_list\_of\_maps. Not added to `tags`. | `map(string)` | `{}` | no |
 | allowed\_ports | List of allowed ingress ports | `list(number)` | `[]` | no |
 | ami | The AMI to use for the instance | `string` | n/a | yes |
 | ami\_owner | Owner of the given AMI | `string` | n/a | yes |
 | applying\_period | The period in seconds over which the specified statistic is applied | `number` | `60` | no |
 | assign\_eip\_address | Assign an Elastic IP address to the instance | `bool` | `true` | no |
 | associate\_public\_ip\_address | Associate a public IP address with the instance | `bool` | `true` | no |
-| attributes | Additional attributes (\_e.g.\_ "1") | `list(string)` | `[]` | no |
+| attributes | Additional attributes (e.g. `1`) | `list(string)` | `[]` | no |
 | availability\_zone | Availability Zone the instance is launched in. If not set, will be launched in the first AZ of the region | `string` | `""` | no |
 | comparison\_operator | The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold | `string` | `"GreaterThanOrEqualToThreshold"` | no |
+| context | Single object for setting entire context at once.<br>See description of individual variables for details.<br>Leave string and numeric variables as `null` to use default value.<br>Individual variable settings (non-null) override settings in context object,<br>except for attributes, tags, and additional\_tag\_map, which are merged. | <pre>object({<br>    enabled             = bool<br>    namespace           = string<br>    environment         = string<br>    stage               = string<br>    name                = string<br>    delimiter           = string<br>    attributes          = list(string)<br>    tags                = map(string)<br>    additional_tag_map  = map(string)<br>    regex_replace_chars = string<br>    label_order         = list(string)<br>    id_length_limit     = number<br>  })</pre> | <pre>{<br>  "additional_tag_map": {},<br>  "attributes": [],<br>  "delimiter": null,<br>  "enabled": true,<br>  "environment": null,<br>  "id_length_limit": null,<br>  "label_order": [],<br>  "name": null,<br>  "namespace": null,<br>  "regex_replace_chars": null,<br>  "stage": null,<br>  "tags": {}<br>}</pre> | no |
 | create\_default\_security\_group | Create default Security Group with only Egress traffic allowed | `bool` | `true` | no |
 | default\_alarm\_action | Default alarm action | `string` | `"action/actions/AWS_EC2.InstanceId.Reboot/1.0"` | no |
 | delete\_on\_termination | Whether the volume should be destroyed on instance termination | `bool` | `true` | no |
-| delimiter | Delimiter between `namespace`, `stage`, `name` and `attributes` | `string` | `"-"` | no |
+| delimiter | Delimiter to be used between `namespace`, `environment`, `stage`, `name` and `attributes`.<br>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
 | disable\_api\_termination | Enable EC2 Instance Termination Protection | `bool` | `false` | no |
 | ebs\_device\_names | Name of the EBS device to mount | `list(string)` | <pre>[<br>  "/dev/xvdb",<br>  "/dev/xvdc",<br>  "/dev/xvdd",<br>  "/dev/xvde",<br>  "/dev/xvdf",<br>  "/dev/xvdg",<br>  "/dev/xvdh",<br>  "/dev/xvdi",<br>  "/dev/xvdj",<br>  "/dev/xvdk",<br>  "/dev/xvdl",<br>  "/dev/xvdm",<br>  "/dev/xvdn",<br>  "/dev/xvdo",<br>  "/dev/xvdp",<br>  "/dev/xvdq",<br>  "/dev/xvdr",<br>  "/dev/xvds",<br>  "/dev/xvdt",<br>  "/dev/xvdu",<br>  "/dev/xvdv",<br>  "/dev/xvdw",<br>  "/dev/xvdx",<br>  "/dev/xvdy",<br>  "/dev/xvdz"<br>]</pre> | no |
 | ebs\_iops | Amount of provisioned IOPS. This must be set with a volume\_type of io1 | `number` | `0` | no |
@@ -39,22 +41,26 @@
 | ebs\_volume\_count | Count of EBS volumes that will be attached to the instance | `number` | `0` | no |
 | ebs\_volume\_size | Size of the EBS volume in gigabytes | `number` | `10` | no |
 | ebs\_volume\_type | The type of EBS volume. Can be standard, gp2 or io1 | `string` | `"gp2"` | no |
-| environment | Environment, e.g. 'prod', 'staging', 'dev', 'pre-prod', 'UAT' | `string` | `""` | no |
+| enabled | Set to false to prevent the module from creating any resources | `bool` | `null` | no |
+| environment | Environment, e.g. 'uw2', 'us-west-2', OR 'prod', 'staging', 'dev', 'UAT' | `string` | `null` | no |
 | evaluation\_periods | The number of periods over which data is compared to the specified threshold | `number` | `5` | no |
 | generate\_ssh\_key\_pair | If true, create a new key pair and save the pem for it to the current working directory | `bool` | `false` | no |
+| id\_length\_limit | Limit `id` to this many characters.<br>Set to `0` for unlimited length.<br>Set to `null` for default, which is `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
 | instance\_count | Count of ec2 instances to create | `number` | `1` | no |
 | instance\_enabled | Flag to control the instance creation. Set to false if it is necessary to skip instance creation | `bool` | `true` | no |
 | instance\_type | The type of the instance | `string` | `"t2.micro"` | no |
 | ipv6\_address\_count | Number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet | `number` | `0` | no |
 | ipv6\_addresses | List of IPv6 addresses from the range of the subnet to associate with the primary network interface | `list(string)` | `[]` | no |
+| label\_order | The naming order of the id output and Name tag.<br>Defaults to ["namespace", "environment", "stage", "name", "attributes"].<br>You can omit any of the 5 elements, but at least one must be present. | `list(string)` | `null` | no |
 | metric\_name | The name for the alarm's associated metric. Allowed values can be found in https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ec2-metricscollected.html | `string` | `"StatusCheckFailed_Instance"` | no |
 | metric\_namespace | The namespace for the alarm's associated metric. Allowed values can be found in https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/aws-namespaces.html | `string` | `"AWS/EC2"` | no |
 | metric\_threshold | The value against which the specified statistic is compared | `number` | `1` | no |
 | monitoring | Launched EC2 instance will have detailed monitoring enabled | `bool` | `true` | no |
-| name | Name of the application | `string` | n/a | yes |
-| namespace | Namespace (e.g. `eg` or `cp`) | `string` | `""` | no |
+| name | Solution name, e.g. 'app' or 'jenkins' | `string` | `null` | no |
+| namespace | Namespace, which could be your organization name or abbreviation, e.g. 'eg' or 'cp' | `string` | `null` | no |
 | permissions\_boundary\_arn | Policy ARN to attach to instance role as a permissions boundary | `string` | `""` | no |
 | private\_ips | Private IP address to associate with the instances in the VPC | `list(string)` | `[]` | no |
+| regex\_replace\_chars | Regex to replace chars with empty string in `namespace`, `environment`, `stage` and `name`.<br>If not set, `"/[^a-zA-Z0-9-]/"` is used to remove all characters other than hyphens, letters and digits. | `string` | `null` | no |
 | region | AWS Region the instance is launched in | `string` | n/a | yes |
 | root\_iops | Amount of provisioned IOPS. This must be set if root\_volume\_type is set to `io1` | `number` | `0` | no |
 | root\_volume\_size | Size of the root volume in gigabytes | `number` | `10` | no |
@@ -63,10 +69,10 @@
 | source\_dest\_check | Controls if traffic is routed to the instance when the destination address does not match the instance. Used for NAT or VPNs | `bool` | `true` | no |
 | ssh\_key\_pair | SSH key pair to be provisioned on the instance | `string` | `""` | no |
 | ssh\_key\_pair\_path | Path to where the generated key pairs will be created. Defaults to $${path.cwd} | `string` | `""` | no |
-| stage | Stage (e.g. `prod`, `dev`, `staging`) | `string` | `""` | no |
+| stage | Stage, e.g. 'prod', 'staging', 'dev', OR 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | statistic\_level | The statistic to apply to the alarm's associated metric. Allowed values are: SampleCount, Average, Sum, Minimum, Maximum | `string` | `"Maximum"` | no |
 | subnet | VPC Subnet ID the instance is launched in | `string` | n/a | yes |
-| tags | Additional tags (\_e.g.\_ { BusinessUnit : ABC }) | `map(string)` | `{}` | no |
+| tags | Additional tags (e.g. `map('BusinessUnit','XYZ')` | `map(string)` | `{}` | no |
 | user\_data | Instance user data. Do not pass gzip-compressed data via this argument | `string` | `""` | no |
 | vpc\_id | The ID of the VPC that the instance security group belongs to | `string` | n/a | yes |
 | welcome\_message | Welcome message | `string` | `""` | no |
@@ -83,7 +89,6 @@
 | ids | Disambiguated IDs list |
 | instance\_count | Total number of instances created |
 | name | Instance(s) name |
-| network\_interface\_ids | IDs of the network interface that was created with the instance |
 | new\_ssh\_keypair\_generated | Was a new ssh\_key\_pair generated |
 | primary\_network\_interface\_ids | IDs of the instance's primary network interface |
 | private\_dns | Private DNS records of instances |

@@ -55,7 +55,9 @@ usage: |-
 
   ```hcl
   module "instance" {
-    source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
+    source = "cloudposse/ec2-instance-group/aws"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version = "x.x.x"
     namespace                   = "eg"
     stage                       = "prod"
     name                        = "app"
@@ -74,7 +76,9 @@ usage: |-
 
   ```hcl
   module "kafka_instance" {
-    source                      = "git::https://github.com/cloudposse/terraform-aws-ec2-instance-group.git?ref=master"
+    source = "cloudposse/ec2-instance-group/aws"
+    # Cloud Posse recommends pinning every module to a specific version
+    # version = "x.x.x"
     namespace                   = "eg"
     stage                       = "prod"
     name                        = "app"
