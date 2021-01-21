@@ -13,7 +13,7 @@ variable "generate_ssh_key_pair" {
 variable "associate_public_ip_address" {
   type        = bool
   description = "Associate a public IP address with the instance"
-  default     = true
+  default     = false
 }
 
 variable "ssh_key_pair_path" {
@@ -261,4 +261,34 @@ variable "permissions_boundary_arn" {
   type        = string
   description = "Policy ARN to attach to instance role as a permissions boundary"
   default     = ""
+}
+
+variable "root_block_device_encrypted" {
+  type        = bool
+  default     = true
+  description = "Whether to encrypt the root block device"
+}
+
+variable "metadata_http_tokens_required" {
+  type        = bool
+  default     = true
+  description = "Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2."
+}
+
+variable "metadata_http_endpoint_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the metadata service is available"
+}
+
+variable "kms_key_id" {
+  type        = string
+  default     = null
+  description = "KMS key ID used to encrypt EBS volume. When specifying kms_key_id, ebs_volume_encrypted needs to be set to true"
+}
+
+variable "ebs_volume_encrypted" {
+  type        = bool
+  description = "Size of the EBS volume in gigabytes"
+  default     = true
 }
