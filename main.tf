@@ -149,6 +149,7 @@ resource "aws_eip" "default" {
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
   vpc               = true
   depends_on        = [aws_instance.default]
+  tags              = module.this.tags
 }
 
 resource "aws_ebs_volume" "default" {
