@@ -77,9 +77,11 @@ resource "aws_iam_role" "default" {
   path                 = "/"
   assume_role_policy   = data.aws_iam_policy_document.default.json
   permissions_boundary = length(var.permissions_boundary_arn) > 0 ? var.permissions_boundary_arn : null
+  tags                 = module.this.tags
 }
 
 resource "aws_instance" "default" {
+  #bridgecrew:skip=BC_AWS_GENERAL_31: Skipping `Ensure Instance Metadata Service Version 1 is not enabled` check until BridgeCrew supports conditional evaluation. See https://github.com/bridgecrewio/checkov/issues/793
   count                       = local.instance_count
   ami                         = data.aws_ami.info.id
   availability_zone           = local.availability_zone
@@ -111,6 +113,13 @@ resource "aws_instance" "default" {
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
+    encrypted             = var.root_block_device_encrypted
+    kms_key_id            = var.kms_key_id
+  }
+
+  metadata_options {
+    http_endpoint = var.metadata_http_endpoint_enabled ? "enabled" : "disabled"
+    http_tokens   = var.metadata_http_tokens_required ? "required" : "optional"
   }
 
   tags = merge(
@@ -140,6 +149,7 @@ resource "aws_eip" "default" {
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
   vpc               = true
   depends_on        = [aws_instance.default]
+  tags              = module.this.tags
 }
 
 resource "aws_ebs_volume" "default" {
@@ -149,6 +159,8 @@ resource "aws_ebs_volume" "default" {
   iops              = local.ebs_iops
   type              = var.ebs_volume_type
   tags              = module.label.tags
+  encrypted         = var.ebs_volume_encrypted
+  kms_key_id        = var.kms_key_id
 }
 
 resource "aws_volume_attachment" "default" {
