@@ -59,7 +59,7 @@ data "aws_ami" "info" {
 
 module "label" {
   source  = "cloudposse/label/null"
-  version = "0.22.1"
+  version = "0.23.0"
   tags    = { AZ = local.availability_zone }
 
   context = module.this.context
