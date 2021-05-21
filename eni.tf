@@ -1,19 +1,11 @@
 locals {
-  additional_ips_count = var.associate_public_ip_address && var.instance_enabled && var.additional_ips_count > 0 ? var.additional_ips_count : 0
+  additional_ips_count = var.associate_public_ip_address && module.this.enabled && var.additional_ips_count > 0 ? var.additional_ips_count : 0
 }
 
 resource "aws_network_interface" "additional" {
-  count     = local.additional_ips_count * var.instance_count
-  subnet_id = var.subnet
-
-  security_groups = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
+  count           = local.additional_ips_count * var.instance_count
+  subnet_id       = var.subnet
+  security_groups = compact(concat(module.security_group.*.id, var.security_groups))
 
   tags       = module.label.tags
   depends_on = [aws_instance.default]

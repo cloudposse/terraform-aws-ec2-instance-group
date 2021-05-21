@@ -28,11 +28,6 @@ variable "instance_type" {
   description = "Type of the instance"
 }
 
-variable "allowed_ports" {
-  type        = list(number)
-  description = "List of allowed ingress ports"
-}
-
 variable "ami_owner" {
   type        = string
   description = "Owner of the given AMI"
@@ -51,11 +46,6 @@ variable "root_volume_size" {
 variable "delete_on_termination" {
   type        = bool
   description = "Whether the volume should be destroyed on instance termination"
-}
-
-variable "create_default_security_group" {
-  type        = bool
-  description = "Create default Security Group with only Egress traffic allowed"
 }
 
 variable "instance_count" {

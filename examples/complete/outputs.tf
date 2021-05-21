@@ -92,3 +92,18 @@ output "instance_count" {
   value       = module.ec2_instance_group.instance_count
   description = "Total number of instances created"
 }
+
+output "security_group_id" {
+  value       = module.ec2_instance_group.security_group_id
+  description = "EC2 instances Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.ec2_instance_group.security_group_arn
+  description = "EC2 instances Security Group ARN"
+}
+
+output "security_group_name" {
+  value       = module.ec2_instance_group.security_group_name
+  description = "EC2 instances Security Group name"
+}
