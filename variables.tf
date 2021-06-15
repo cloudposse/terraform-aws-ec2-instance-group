@@ -45,16 +45,47 @@ variable "vpc_id" {
   description = "The ID of the VPC that the instance security group belongs to"
 }
 
-variable "security_groups" {
-  description = "List of Security Group IDs allowed to connect to the instance"
-  type        = list(string)
-  default     = []
+variable "security_group_enabled" {
+  type        = bool
+  description = "Whether to create default Security Group for EC2 instances."
+  default     = true
 }
 
-variable "allowed_ports" {
-  type        = list(number)
-  description = "List of allowed ingress ports"
+variable "security_group_description" {
+  type        = string
+  default     = "EC2 instances Security Group"
+  description = "The Security Group description."
+}
+
+variable "security_group_use_name_prefix" {
+  type        = bool
+  default     = false
+  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
+}
+
+variable "security_group_rules" {
+  type = list(any)
+  default = [
+    {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic"
+    }
+  ]
+  description = <<-EOT
+    A list of maps of Security Group rules. 
+    The values of map is fully complated with `aws_security_group_rule` resource. 
+    To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
+  EOT
+}
+
+variable "security_groups" {
+  type        = list(string)
   default     = []
+  description = "A list of Security Group IDs to associate with EC2 instances."
 }
 
 variable "subnet" {
@@ -236,12 +267,6 @@ variable "default_alarm_action" {
 variable "create_default_security_group" {
   type        = bool
   description = "Create default Security Group with only Egress traffic allowed"
-  default     = true
-}
-
-variable "instance_enabled" {
-  type        = bool
-  description = "Flag to control the instance creation. Set to false if it is necessary to skip instance creation"
   default     = true
 }
 

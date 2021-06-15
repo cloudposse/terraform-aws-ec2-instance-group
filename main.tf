@@ -1,13 +1,13 @@
 locals {
-  instance_count       = var.instance_enabled ? var.instance_count : 0
-  security_group_count = var.create_default_security_group ? 1 : 0
-  region               = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops            = var.root_volume_type == "io1" ? var.root_iops : 0
-  ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
-  availability_zone    = var.availability_zone
-  root_volume_type     = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled ? var.instance_count : 0
-  ssh_key_pair_path    = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  instance_count         = module.this.enabled ? var.instance_count : 0
+  region                 = var.region != "" ? var.region : data.aws_region.default.name
+  root_iops              = var.root_volume_type == "io1" ? var.root_iops : 0
+  ebs_iops               = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
+  availability_zone      = var.availability_zone
+  root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
+  count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
+  ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  security_group_enabled = module.this.enabled && var.security_group_enabled
 }
 
 locals {
@@ -98,15 +98,7 @@ resource "aws_instance" "default" {
   source_dest_check           = var.source_dest_check
   ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
   ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
-
-  vpc_security_group_ids = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
+  vpc_security_group_ids      = compact(concat(module.security_group.*.id, var.security_groups))
 
   root_block_device {
     volume_type           = local.root_volume_type

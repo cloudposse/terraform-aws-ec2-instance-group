@@ -45,14 +45,22 @@ output "ssh_key_pem_path" {
 
 output "security_group_ids" {
   description = "ID on the new AWS Security Group associated with creating instance"
-  value = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
+  value       = compact(concat(module.security_group.*.id, var.security_groups))
+}
+
+output "security_group_id" {
+  value       = module.security_group.id
+  description = "EC2 instances Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.security_group.arn
+  description = "EC2 instances Security Group ARN"
+}
+
+output "security_group_name" {
+  value       = module.security_group.name
+  description = "EC2 instances Security Group name"
 }
 
 output "role_names" {
