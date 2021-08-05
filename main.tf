@@ -132,7 +132,7 @@ module "ssh_key_pair" {
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
-  enabled               = signum(length(var.ssh_key_pair)) == 1 && !var.generate_ssh_key_pair ? false : true
+  enabled               = signum(length(var.ssh_key_pair)) == 1 && ! var.generate_ssh_key_pair ? false : true
 
   context = module.this.context
 }
