@@ -1,6 +1,6 @@
 module "security_group" {
   source  = "cloudposse/security-group/aws"
-  version = "0.4.1"
+  version = "0.4.2"
 
   rules                      = var.security_group_rules
   security_group_description = var.security_group_description
