@@ -29,8 +29,8 @@ output "name" {
 }
 
 output "aws_key_pair_name" {
-  description = "Name of AWS key pair"
-  value       = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : ""
+  description = "Name of AWS key pair (if applicable)"
+  value       = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : local.generate_ssh_key_pair ? module.ssh_key_pair.key_name : ""
 }
 
 output "new_ssh_keypair_generated" {

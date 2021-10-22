@@ -8,6 +8,7 @@ locals {
   count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
   ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
   security_group_enabled = module.this.enabled && var.security_group_enabled
+  generate_ssh_key_pair  = var.enable_ssh_key ? var.generate_ssh_key_pair : false
 }
 
 locals {
@@ -134,7 +135,7 @@ module "ssh_key_pair" {
 
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
-  generate_ssh_key      = var.generate_ssh_key_pair
+  generate_ssh_key      = local.generate_ssh_key_pair
 
   context = module.this.context
 }
