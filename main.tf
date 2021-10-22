@@ -92,7 +92,7 @@ resource "aws_instance" "default" {
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = var.enable_ssh_key ? (signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name) : null
+  key_name                    = var.enable_ssh_key ? (signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair[0].key_name) : null
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
