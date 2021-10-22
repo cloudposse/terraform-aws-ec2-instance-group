@@ -16,7 +16,7 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
-variable "enable_ssh_key" {
+variable "ssh_key_enabled" {
   type        = bool
   description = "If false, no SSH key will be created or associated with the instance(s)."
   default     = true

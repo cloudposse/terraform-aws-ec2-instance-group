@@ -40,7 +40,7 @@ output "new_ssh_keypair_generated" {
 
 output "ssh_key_pem_path" {
   description = "Path where SSH key pair was created (if applicable)"
-  value       = var.enable_ssh_key ? "${local.ssh_key_pair_path}/${module.ssh_key_pair[0].key_name}.pem" : ""
+  value       = var.ssh_key_enabled ? "${local.ssh_key_pair_path}/${module.ssh_key_pair[0].key_name}.pem" : ""
 }
 
 output "security_group_ids" {

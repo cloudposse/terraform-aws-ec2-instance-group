@@ -8,7 +8,7 @@ locals {
   count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
   ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
   security_group_enabled = module.this.enabled && var.security_group_enabled
-  generate_ssh_key_pair  = var.enable_ssh_key ? var.generate_ssh_key_pair : false
+  generate_ssh_key_pair  = var.ssh_key_enabled ? var.generate_ssh_key_pair : false
 }
 
 locals {
@@ -92,7 +92,7 @@ resource "aws_instance" "default" {
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = var.enable_ssh_key ? (signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair[0].key_name) : null
+  key_name                    = var.ssh_key_enabled ? (signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair[0].key_name) : null
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
@@ -131,7 +131,7 @@ module "ssh_key_pair" {
   source  = "cloudposse/key-pair/aws"
   version = "0.18.2"
 
-  count = var.enable_ssh_key ? 1 : 0
+  count = var.ssh_key_enabled ? 1 : 0
 
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
