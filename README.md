@@ -344,7 +344,7 @@ Available targets:
 | Name | Description |
 |------|-------------|
 | <a name="output_alarm_ids"></a> [alarm\_ids](#output\_alarm\_ids) | CloudWatch Alarm IDs |
-| <a name="output_aws_key_pair_name"></a> [aws\_key\_pair\_name](#output\_aws\_key\_pair\_name) | Name of AWS key pair |
+| <a name="output_aws_key_pair_name"></a> [aws\_key\_pair\_name](#output\_aws\_key\_pair\_name) | Name of AWS key pair (if applicable) |
 | <a name="output_ebs_ids"></a> [ebs\_ids](#output\_ebs\_ids) | IDs of EBSs |
 | <a name="output_eip_per_instance_count"></a> [eip\_per\_instance\_count](#output\_eip\_per\_instance\_count) | Number of EIPs per instance. |
 | <a name="output_eni_to_eip_map"></a> [eni\_to\_eip\_map](#output\_eni\_to\_eip\_map) | Map of ENI with EIP |
