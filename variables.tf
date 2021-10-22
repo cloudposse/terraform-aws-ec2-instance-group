@@ -63,12 +63,6 @@ variable "security_group_description" {
   description = "The Security Group description."
 }
 
-variable "security_group_use_name_prefix" {
-  type        = bool
-  default     = false
-  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
-}
-
 variable "security_group_rules" {
   type = list(any)
   default = [
