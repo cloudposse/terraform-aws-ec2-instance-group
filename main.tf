@@ -1,12 +1,12 @@
 locals {
-  instance_count         = module.this.enabled ? var.instance_count : 0
-  region                 = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops              = var.root_volume_type == "io1" ? var.root_iops : 0
-  ebs_iops               = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
-  availability_zone      = var.availability_zone
-  root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
-  ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  instance_count    = module.this.enabled ? var.instance_count : 0
+  region            = var.region != "" ? var.region : data.aws_region.default.name
+  root_iops         = var.root_volume_type == "io1" ? var.root_iops : 0
+  ebs_iops          = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
+  availability_zone = var.availability_zone
+  root_volume_type  = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
+  count_default_ips = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
+  ssh_key_pair_path = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
   security_group_enabled = module.this.enabled && var.security_group_enabled
 }
 
@@ -91,7 +91,7 @@ resource "aws_instance" "default" {
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
+  key_name                    = var.enable_ssh_key ? (signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name) : null
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
@@ -127,14 +127,18 @@ resource "aws_instance" "default" {
 ##
 
 module "ssh_key_pair" {
-  source                = "cloudposse/key-pair/aws"
-  version               = "0.18.2"
+  source  = "cloudposse/key-pair/aws"
+  version = "0.18.2"
+
+  count = var.enable_ssh_key ? 1 : 0
+
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
 
   context = module.this.context
 }
+
 
 resource "aws_eip" "default" {
   count             = local.count_default_ips
@@ -146,7 +150,6 @@ resource "aws_eip" "default" {
 
 resource "aws_ebs_volume" "default" {
   count             = var.ebs_volume_count * local.instance_count
-  region            = local.region
   availability_zone = local.availability_zone
   size              = var.ebs_volume_size
   iops              = local.ebs_iops

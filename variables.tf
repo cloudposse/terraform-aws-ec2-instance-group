@@ -16,6 +16,12 @@ variable "associate_public_ip_address" {
   default     = false
 }
 
+variable "enable_ssh_key" {
+  type        = bool
+  description = "If false, no SSH key will be created or associated with the instance(s)."
+  default     = true
+}
+
 variable "ssh_key_pair_path" {
   type        = string
   description = "Path to where the generated key pairs will be created. Defaults to $$${path.cwd}"
