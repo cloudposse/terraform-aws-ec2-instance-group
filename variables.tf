@@ -94,9 +94,9 @@ variable "security_groups" {
   description = "A list of Security Group IDs to associate with EC2 instances."
 }
 
-variable "subnet" {
-  type        = string
-  description = "VPC Subnet ID the instance is launched in"
+variable "subnet_ids" {
+  type        = list(string)
+  description = "VPC Subnet IDs the instances is launched in. Each instance will be launched in separate subnets."
 }
 
 variable "region" {

@@ -4,7 +4,7 @@ locals {
 
 resource "aws_network_interface" "additional" {
   count           = local.additional_ips_count * var.instance_count
-  subnet_id       = var.subnet
+  subnet_id       = element(var.subnet_ids, count.index)
   security_groups = compact(concat(module.security_group.*.id, var.security_groups))
 
   tags       = module.label.tags

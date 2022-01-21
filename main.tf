@@ -94,7 +94,7 @@ resource "aws_instance" "default" {
   iam_instance_profile        = local.ec2_instance_profile
   associate_public_ip_address = var.associate_public_ip_address
   key_name                    = local.key_name
-  subnet_id                   = var.subnet
+  subnet_id                   = element(var.subnet_ids, count.index)
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
