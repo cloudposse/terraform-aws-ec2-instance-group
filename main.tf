@@ -114,6 +114,7 @@ resource "aws_instance" "default" {
   metadata_options {
     http_endpoint = var.metadata_http_endpoint_enabled ? "enabled" : "disabled"
     http_tokens   = var.metadata_http_tokens_required ? "required" : "optional"
+    instance_metadata_tags = var.instance_metadata_tags ? "enabled" : "disabled"
   }
 
   tags = merge(

@@ -123,7 +123,7 @@ variable "ami_owner" {
 variable "ebs_optimized" {
   type        = bool
   description = "Launched EC2 instance will be EBS-optimized"
-  default     = false
+  default     = true
 }
 
 variable "disable_api_termination" {
@@ -310,6 +310,12 @@ variable "metadata_http_endpoint_enabled" {
   type        = bool
   default     = true
   description = "Whether the metadata service is available"
+}
+
+variable "instance_metadata_tags_enabled" {
+  type        = bool
+  default     = false
+  description = "Whether the enable instance metadata tags"
 }
 
 variable "kms_key_id" {
