@@ -1,13 +1,15 @@
 locals {
-  instance_count         = module.this.enabled ? var.instance_count : 0
-  region                 = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops              = var.root_volume_type == "io1" ? var.root_iops : 0
-  ebs_iops               = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
-  root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
-  ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
-  key_name               = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : (var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : null)
-  security_group_enabled = module.this.enabled && var.security_group_enabled
+  instance_count           = module.this.enabled ? var.instance_count : 0
+  region                   = var.region != "" ? var.region : data.aws_region.default.name
+  root_iops                = var.root_volume_type == "io1" ? var.root_iops : 0
+  ebs_iops                 = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
+  root_volume_type         = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
+  count_default_ips        = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
+  ssh_key_pair_path        = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  key_name                 = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : (var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : null)
+  security_group_enabled   = module.this.enabled && var.security_group_enabled
+  create_ec2_instance_role = signum(local.instance_count) > 0 && signum(length(var.existing_ec2_instance_profile)) < 1 ? 1 : 0
+  ec2_instance_profile     = signum(local.instance_count) > 0 && signum(length(var.existing_ec2_instance_profile)) < 1 ? join("", aws_iam_instance_profile.default.*.name) : var.existing_ec2_instance_profile
 }
 
 locals {
@@ -66,13 +68,13 @@ module "label" {
 }
 
 resource "aws_iam_instance_profile" "default" {
-  count = signum(local.instance_count)
+  count = local.create_ec2_instance_role
   name  = module.label.id
   role  = join("", aws_iam_role.default.*.name)
 }
 
 resource "aws_iam_role" "default" {
-  count                = signum(local.instance_count)
+  count                = local.create_ec2_instance_role
   name                 = module.label.id
   path                 = "/"
   assume_role_policy   = data.aws_iam_policy_document.default.json
@@ -89,7 +91,7 @@ resource "aws_instance" "default" {
   ebs_optimized               = var.ebs_optimized
   disable_api_termination     = var.disable_api_termination
   user_data                   = var.user_data
-  iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
+  iam_instance_profile        = local.ec2_instance_profile
   associate_public_ip_address = var.associate_public_ip_address
   key_name                    = local.key_name
   subnet_id                   = var.subnet

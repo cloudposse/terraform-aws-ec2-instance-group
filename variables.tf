@@ -10,6 +10,12 @@ variable "generate_ssh_key_pair" {
   default     = false
 }
 
+variable "existing_ec2_instance_profile" {
+  type        = string
+  description = "Name of an existing EC2 instance profile. New Role & Instance Profile will be created if empty."
+  default     = ""
+}
+
 variable "associate_public_ip_address" {
   type        = bool
   description = "Associate a public IP address with the instance"
