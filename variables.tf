@@ -96,7 +96,7 @@ variable "security_groups" {
 
 variable "subnet_ids" {
   type        = list(string)
-  description = "VPC Subnet IDs the instances is launched in. Each instance will be launched in separate subnets."
+  description = "VPC Subnet IDs the instances are launched in. Each instance will be launched in a separate subnet. The number of the provided subnets must match `var.instance_count`"
 }
 
 variable "region" {
@@ -315,7 +315,7 @@ variable "metadata_http_endpoint_enabled" {
 variable "instance_metadata_tags_enabled" {
   type        = bool
   default     = false
-  description = "Whether the enable instance metadata tags"
+  description = "Enable/disable instance metadata tags"
 }
 
 variable "kms_key_id" {

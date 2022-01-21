@@ -298,7 +298,7 @@ Available targets:
 | <a name="input_generate_ssh_key_pair"></a> [generate\_ssh\_key\_pair](#input\_generate\_ssh\_key\_pair) | If true, create a new key pair and save the pem for it to the current working directory | `bool` | `false` | no |
 | <a name="input_id_length_limit"></a> [id\_length\_limit](#input\_id\_length\_limit) | Limit `id` to this many characters (minimum 6).<br>Set to `0` for unlimited length.<br>Set to `null` for keep the existing setting, which defaults to `0`.<br>Does not affect `id_full`. | `number` | `null` | no |
 | <a name="input_instance_count"></a> [instance\_count](#input\_instance\_count) | Count of ec2 instances to create | `number` | `1` | no |
-| <a name="input_instance_metadata_tags_enabled"></a> [instance\_metadata\_tags\_enabled](#input\_instance\_metadata\_tags\_enabled) | Whether the enable instance metadata tags | `bool` | `false` | no |
+| <a name="input_instance_metadata_tags_enabled"></a> [instance\_metadata\_tags\_enabled](#input\_instance\_metadata\_tags\_enabled) | Enable/disable instance metadata tags | `bool` | `false` | no |
 | <a name="input_instance_type"></a> [instance\_type](#input\_instance\_type) | The type of the instance | `string` | `"t2.micro"` | no |
 | <a name="input_ipv6_address_count"></a> [ipv6\_address\_count](#input\_ipv6\_address\_count) | Number of IPv6 addresses to associate with the primary network interface. Amazon EC2 chooses the IPv6 addresses from the range of your subnet | `number` | `0` | no |
 | <a name="input_ipv6_addresses"></a> [ipv6\_addresses](#input\_ipv6\_addresses) | List of IPv6 addresses from the range of the subnet to associate with the primary network interface | `list(string)` | `[]` | no |
@@ -333,7 +333,7 @@ Available targets:
 | <a name="input_ssh_key_pair_path"></a> [ssh\_key\_pair\_path](#input\_ssh\_key\_pair\_path) | Path to where the generated key pairs will be created. Defaults to $${path.cwd} | `string` | `""` | no |
 | <a name="input_stage"></a> [stage](#input\_stage) | ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | <a name="input_statistic_level"></a> [statistic\_level](#input\_statistic\_level) | The statistic to apply to the alarm's associated metric. Allowed values are: SampleCount, Average, Sum, Minimum, Maximum | `string` | `"Maximum"` | no |
-| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | VPC Subnet IDs the instances is launched in. Each instance will be launched in separate subnets. | `list(string)` | n/a | yes |
+| <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | VPC Subnet IDs the instances are launched in. Each instance will be launched in a separate subnet. The number of the provided subnets must match `var.instance_count` | `list(string)` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
 | <a name="input_tenant"></a> [tenant](#input\_tenant) | ID element \_(Rarely used, not included by default)\_. A customer identifier, indicating who this instance of a resource is for | `string` | `null` | no |
 | <a name="input_user_data"></a> [user\_data](#input\_user\_data) | Instance user data. Do not pass gzip-compressed data via this argument | `string` | `""` | no |
