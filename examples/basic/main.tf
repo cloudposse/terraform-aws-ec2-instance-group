@@ -45,7 +45,7 @@ module "zero_servers" {
   create_default_security_group = true
   region                        = data.aws_region.default.name
   availability_zone             = data.aws_subnet.default.availability_zone
-  subnet                        = data.aws_subnet.default.id
+  subnet_ids                    = data.aws_subnet_ids.all.ids
   vpc_id                        = data.aws_vpc.default.id
   generate_ssh_key_pair         = true
 }
@@ -63,7 +63,7 @@ module "one_server" {
   create_default_security_group = true
   region                        = data.aws_region.default.name
   availability_zone             = data.aws_subnet.default.availability_zone
-  subnet                        = data.aws_subnet.default.id
+  subnet_ids                    = data.aws_subnet_ids.all.ids
   vpc_id                        = data.aws_vpc.default.id
   additional_ips_count          = 1
   generate_ssh_key_pair         = true
@@ -83,7 +83,7 @@ module "two_servers" {
   create_default_security_group = true
   region                        = data.aws_region.default.name
   availability_zone             = data.aws_subnet.default.availability_zone
-  subnet                        = data.aws_subnet.default.id
+  subnet_ids                    = data.aws_subnet_ids.all.ids
   vpc_id                        = data.aws_vpc.default.id
   additional_ips_count          = 1
   generate_ssh_key_pair         = true
