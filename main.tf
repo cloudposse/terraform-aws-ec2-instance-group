@@ -3,10 +3,10 @@ locals {
   region                 = var.region != "" ? var.region : data.aws_region.default.name
   root_iops              = var.root_volume_type == "io1" ? var.root_iops : 0
   ebs_iops               = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
-  availability_zone      = var.availability_zone
   root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
   count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
   ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  key_name               = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : (var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : null)
   security_group_enabled = module.this.enabled && var.security_group_enabled
 }
 
@@ -60,7 +60,7 @@ data "aws_ami" "info" {
 module "label" {
   source  = "cloudposse/label/null"
   version = "0.24.1"
-  tags    = { AZ = local.availability_zone }
+  tags    = { AZ = var.availability_zone }
 
   context = module.this.context
 }
@@ -84,14 +84,14 @@ resource "aws_instance" "default" {
   #bridgecrew:skip=BC_AWS_GENERAL_31: Skipping `Ensure Instance Metadata Service Version 1 is not enabled` check until BridgeCrew supports conditional evaluation. See https://github.com/bridgecrewio/checkov/issues/793
   count                       = local.instance_count
   ami                         = data.aws_ami.info.id
-  availability_zone           = local.availability_zone
+  availability_zone           = var.availability_zone
   instance_type               = var.instance_type
   ebs_optimized               = var.ebs_optimized
   disable_api_termination     = var.disable_api_termination
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
+  key_name                    = local.key_name
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
   private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
@@ -127,6 +127,7 @@ resource "aws_instance" "default" {
 ##
 
 module "ssh_key_pair" {
+  count                 = var.generate_ssh_key_pair ? 1 : 0
   source                = "cloudposse/key-pair/aws"
   version               = "0.18.2"
   ssh_public_key_path   = local.ssh_key_pair_path
@@ -146,7 +147,7 @@ resource "aws_eip" "default" {
 
 resource "aws_ebs_volume" "default" {
   count             = var.ebs_volume_count * local.instance_count
-  availability_zone = local.availability_zone
+  availability_zone = var.availability_zone
   size              = var.ebs_volume_size
   iops              = local.ebs_iops
   type              = var.ebs_volume_type
