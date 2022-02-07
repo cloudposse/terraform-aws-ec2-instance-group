@@ -6,10 +6,10 @@ locals {
   root_volume_type         = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
   count_default_ips        = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
   ssh_key_pair_path        = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
-  key_name                 = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : (var.generate_ssh_key_pair ? join("", module.ssh_key_pair.*.key_name) : null)
+  key_name                 = length(var.ssh_key_pair) == 1 ? var.ssh_key_pair : (var.generate_ssh_key_pair ? join("", module.ssh_key_pair.*.key_name) : null)
   security_group_enabled   = module.this.enabled && var.security_group_enabled
-  create_ec2_instance_role = signum(local.instance_count) > 0 && signum(length(var.existing_ec2_instance_profile)) < 1 ? 1 : 0
-  ec2_instance_profile     = signum(local.instance_count) > 0 && signum(length(var.existing_ec2_instance_profile)) < 1 ? join("", aws_iam_instance_profile.default.*.name) : var.existing_ec2_instance_profile
+  create_ec2_instance_role = local.instance_count > 0 && length(var.existing_ec2_instance_profile) < 1 ? 1 : 0
+  ec2_instance_profile     = local.instance_count > 0 && length(var.existing_ec2_instance_profile) < 1 ? join("", aws_iam_instance_profile.default.*.name) : var.existing_ec2_instance_profile
 }
 
 locals {
