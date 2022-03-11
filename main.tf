@@ -3,6 +3,8 @@ locals {
   region                 = var.region != "" ? var.region : data.aws_region.default.name
   root_iops              = contains(["io1", "gp3"], var.root_volume_type) ? var.root_iops : 0
   ebs_iops               = contains(["io1", "gp3"], var.ebs_volume_type) ? var.ebs_iops : 0
+  root_throughput        = contains(["io1", "gp3"], var.root_volume_type) ? var.root_throughput : 0
+  ebs_throughput         = contains(["io1", "gp3"], var.ebs_volume_type) ? var.ebs_throughput : 0
   availability_zone      = var.availability_zone
   root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
   count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
@@ -104,6 +106,7 @@ resource "aws_instance" "default" {
     volume_type           = local.root_volume_type
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
+    throughput            = local.root_throughput
     delete_on_termination = var.delete_on_termination
     encrypted             = var.root_block_device_encrypted
     kms_key_id            = var.kms_key_id
@@ -149,6 +152,7 @@ resource "aws_ebs_volume" "default" {
   availability_zone = local.availability_zone
   size              = var.ebs_volume_size
   iops              = local.ebs_iops
+  throughput        = local.ebs_throughput
   type              = var.ebs_volume_type
   tags              = module.label.tags
   encrypted         = var.ebs_volume_encrypted

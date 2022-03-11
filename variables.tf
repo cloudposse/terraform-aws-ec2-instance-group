@@ -174,6 +174,12 @@ variable "root_iops" {
   default     = 0
 }
 
+variable "root_throughput" {
+  type        = number
+  description = "Throughput to provision for the root volume in mebibytes per second (MiB/s). This must be set if root_volume_type is set to `gp3`"
+  default     = 0
+}
+
 variable "ebs_device_names" {
   type        = list(string)
   description = "Name of the EBS device to mount"
@@ -195,6 +201,12 @@ variable "ebs_volume_size" {
 variable "ebs_iops" {
   type        = number
   description = "Amount of provisioned IOPS. This must be set with a volume_type of io1 or gp3"
+  default     = 0
+}
+
+variable "ebs_throughput" {
+  type        = number
+  description = "Throughput to provision for the EBS volumes in mebibytes per second (MiB/s). This must be set if ebs_volume_type is set to `gp3`"
   default     = 0
 }
 
