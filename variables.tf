@@ -4,6 +4,12 @@ variable "ssh_key_pair" {
   default     = ""
 }
 
+variable "enable_ssh_key_pair" {
+  type        = bool
+  description = "If false, no key pair will be attached to the instances"
+  default     = true
+}
+
 variable "generate_ssh_key_pair" {
   type        = bool
   description = "If true, create a new key pair and save the pem for it to the current working directory"
