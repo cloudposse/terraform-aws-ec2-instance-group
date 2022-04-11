@@ -1,8 +1,8 @@
 locals {
   instance_count           = module.this.enabled ? var.instance_count : 0
   region                   = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops                = var.root_volume_type == "io1" ? var.root_iops : 0
-  ebs_iops                 = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
+  root_iops                = var.root_volume_type == "io1" ? var.root_iops : (var.root_iops > 0 ? var.root_iops : 0)
+  ebs_iops                 = var.ebs_volume_type == "io1" ? var.ebs_iops : (var.ebs_iops > 0 ? var.ebs_iops : 0)
   root_volume_type         = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
   count_default_ips        = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
   ssh_key_pair_path        = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
