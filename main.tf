@@ -134,20 +134,6 @@ resource "aws_instance" "default" {
   }
 }
 
-##
-## Create keypair if one isn't provided
-##
-
-/* module "ssh_key_pair" {
-  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
-  namespace             = var.namespace
-  stage                 = var.stage
-  name                  = var.name
-  ssh_public_key_path   = local.ssh_key_pair_path
-  private_key_extension = ".pem"
-  generate_ssh_key      = var.generate_ssh_key_pair
-}
- */
 resource "aws_eip" "default" {
   count             = local.count_default_ips
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
