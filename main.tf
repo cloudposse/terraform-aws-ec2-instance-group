@@ -59,7 +59,7 @@ data "aws_ami" "info" {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.14.1"
+  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.22.1"
   namespace  = var.namespace
   stage      = var.stage
   name       = var.name
@@ -97,13 +97,14 @@ resource "aws_instance" "default" {
   user_data                   = var.user_data
   iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
   associate_public_ip_address = var.associate_public_ip_address
-  key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
+  key_name                    = var.ssh_key_pair
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
-  private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
+  #private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
+  hibernation                 = var.hibernation
 
   vpc_security_group_ids = compact(
     concat(
@@ -119,6 +120,7 @@ resource "aws_instance" "default" {
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
+    encrypted             = var.encrypted
   }
 
   tags = merge(
@@ -127,20 +129,9 @@ resource "aws_instance" "default" {
       instance_index = count.index
     }
   )
-}
-
-##
-## Create keypair if one isn't provided
-##
-
-module "ssh_key_pair" {
-  source                = "git::https://github.com/cloudposse/terraform-aws-key-pair.git?ref=tags/0.4.0"
-  namespace             = var.namespace
-  stage                 = var.stage
-  name                  = var.name
-  ssh_public_key_path   = local.ssh_key_pair_path
-  private_key_extension = ".pem"
-  generate_ssh_key      = var.generate_ssh_key_pair
+  lifecycle {
+    ignore_changes = [user_data]
+  }
 }
 
 resource "aws_eip" "default" {
