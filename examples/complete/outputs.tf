@@ -83,11 +83,6 @@ output "primary_network_interface_ids" {
   value       = module.ec2_instance_group.primary_network_interface_ids
 }
 
-output "network_interface_ids" {
-  description = "IDs of the network interface that was created with the instance"
-  value       = module.ec2_instance_group.network_interface_ids
-}
-
 output "eip_per_instance_count" {
   value       = module.ec2_instance_group.eip_per_instance_count
   description = "Number of EIPs per instance"
@@ -96,4 +91,19 @@ output "eip_per_instance_count" {
 output "instance_count" {
   value       = module.ec2_instance_group.instance_count
   description = "Total number of instances created"
+}
+
+output "security_group_id" {
+  value       = module.ec2_instance_group.security_group_id
+  description = "EC2 instances Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.ec2_instance_group.security_group_arn
+  description = "EC2 instances Security Group ARN"
+}
+
+output "security_group_name" {
+  value       = module.ec2_instance_group.security_group_name
+  description = "EC2 instances Security Group name"
 }

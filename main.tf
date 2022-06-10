@@ -1,20 +1,19 @@
 locals {
-  instance_count       = var.instance_enabled ? var.instance_count : 0
-  security_group_count = var.create_default_security_group ? 1 : 0
-  region               = var.region != "" ? var.region : data.aws_region.default.name
-  root_iops            = var.root_volume_type == "io1" ? var.root_iops : 0
-  ebs_iops             = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
-  availability_zone    = var.availability_zone
-  root_volume_type     = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
-  count_default_ips    = var.associate_public_ip_address && var.assign_eip_address && var.instance_enabled && var.instance_count > 0 ? 1 : 0
-  ssh_key_pair_path    = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  instance_count         = module.this.enabled ? var.instance_count : 0
+  region                 = var.region != "" ? var.region : data.aws_region.default.name
+  root_iops              = var.root_volume_type == "io1" ? var.root_iops : 0
+  ebs_iops               = var.ebs_volume_type == "io1" ? var.ebs_iops : 0
+  availability_zone      = var.availability_zone
+  root_volume_type       = var.root_volume_type != "" ? var.root_volume_type : data.aws_ami.info.root_device_type
+  count_default_ips      = var.associate_public_ip_address && var.assign_eip_address && module.this.enabled ? var.instance_count : 0
+  ssh_key_pair_path      = var.ssh_key_pair_path == "" ? path.cwd : var.ssh_key_pair_path
+  security_group_enabled = module.this.enabled && var.security_group_enabled
 }
 
 locals {
   public_ips = compact(
     concat(
-      coalescelist(aws_eip.default.*.public_ip, [""]),
-      coalescelist(aws_instance.default.*.public_ip, [""]),
+      coalescelist(aws_eip.default.*.public_ip, aws_instance.default.*.public_ip),
       coalescelist(aws_eip.additional.*.public_ip, [""])
     )
   )
@@ -59,19 +58,11 @@ data "aws_ami" "info" {
 }
 
 module "label" {
-  source     = "git::https://github.com/cloudposse/terraform-null-label.git?ref=tags/0.22.1"
-  namespace  = var.namespace
-  stage      = var.stage
-  name       = var.name
-  attributes = var.attributes
-  delimiter  = var.delimiter
-  tags = merge(
-    {
-      AZ = local.availability_zone
-    },
-    var.tags
-  )
-  enabled = true
+  source  = "cloudposse/label/null"
+  version = "0.24.1"
+  tags    = { AZ = local.availability_zone }
+
+  context = module.this.context
 }
 
 resource "aws_iam_instance_profile" "default" {
@@ -81,13 +72,16 @@ resource "aws_iam_instance_profile" "default" {
 }
 
 resource "aws_iam_role" "default" {
-  count              = signum(local.instance_count)
-  name               = module.label.id
-  path               = "/"
-  assume_role_policy = data.aws_iam_policy_document.default.json
+  count                = signum(local.instance_count)
+  name                 = module.label.id
+  path                 = "/"
+  assume_role_policy   = data.aws_iam_policy_document.default.json
+  permissions_boundary = length(var.permissions_boundary_arn) > 0 ? var.permissions_boundary_arn : null
+  tags                 = module.this.tags
 }
 
 resource "aws_instance" "default" {
+  #bridgecrew:skip=BC_AWS_GENERAL_31: Skipping `Ensure Instance Metadata Service Version 1 is not enabled` check until BridgeCrew supports conditional evaluation. See https://github.com/bridgecrewio/checkov/issues/793
   count                       = local.instance_count
   ami                         = data.aws_ami.info.id
   availability_zone           = local.availability_zone
@@ -102,6 +96,7 @@ resource "aws_instance" "default" {
   monitoring                  = var.monitoring
   #private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
+<<<<<<< HEAD
   ipv6_address_count          = var.ipv6_address_count
   ipv6_addresses              = var.ipv6_addresses
   hibernation                 = var.hibernation
@@ -114,13 +109,28 @@ resource "aws_instance" "default" {
       var.security_groups
     )
   )
+=======
+  ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
+  ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
+  vpc_security_group_ids      = compact(concat(module.security_group.*.id, var.security_groups))
+>>>>>>> upstream/master
 
   root_block_device {
     volume_type           = local.root_volume_type
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
+<<<<<<< HEAD
     encrypted             = var.encrypted
+=======
+    encrypted             = var.root_block_device_encrypted
+    kms_key_id            = var.kms_key_id
+  }
+
+  metadata_options {
+    http_endpoint = var.metadata_http_endpoint_enabled ? "enabled" : "disabled"
+    http_tokens   = var.metadata_http_tokens_required ? "required" : "optional"
+>>>>>>> upstream/master
   }
 
   tags = merge(
@@ -129,9 +139,26 @@ resource "aws_instance" "default" {
       instance_index = count.index
     }
   )
+<<<<<<< HEAD
   lifecycle {
     ignore_changes = [user_data]
   }
+=======
+}
+
+##
+## Create keypair if one isn't provided
+##
+
+module "ssh_key_pair" {
+  source                = "cloudposse/key-pair/aws"
+  version               = "0.18.2"
+  ssh_public_key_path   = local.ssh_key_pair_path
+  private_key_extension = ".pem"
+  generate_ssh_key      = var.generate_ssh_key_pair
+
+  context = module.this.context
+>>>>>>> upstream/master
 }
 
 resource "aws_eip" "default" {
@@ -139,6 +166,7 @@ resource "aws_eip" "default" {
   network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
   vpc               = true
   depends_on        = [aws_instance.default]
+  tags              = module.this.tags
 }
 
 resource "aws_ebs_volume" "default" {
@@ -148,19 +176,13 @@ resource "aws_ebs_volume" "default" {
   iops              = local.ebs_iops
   type              = var.ebs_volume_type
   tags              = module.label.tags
+  encrypted         = var.ebs_volume_encrypted
+  kms_key_id        = var.kms_key_id
 }
 
 resource "aws_volume_attachment" "default" {
-  count = signum(local.instance_count) == 1 ? var.ebs_volume_count * local.instance_count : 0
-
-  device_name = slice(
-    var.ebs_device_names,
-    0,
-    floor(
-      var.ebs_volume_count * local.instance_count / max(local.instance_count, 1),
-    ),
-  )[count.index]
-
+  count       = signum(local.instance_count) == 1 ? var.ebs_volume_count * local.instance_count : 0
+  device_name = element(slice(var.ebs_device_names, 0, floor(var.ebs_volume_count * local.instance_count / max(local.instance_count, 1))), count.index)
   volume_id   = aws_ebs_volume.default.*.id[count.index]
   instance_id = aws_instance.default.*.id[count.index]
 }

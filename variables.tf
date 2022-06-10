@@ -1,38 +1,3 @@
-variable "namespace" {
-  type        = string
-  description = "Namespace (e.g. `eg` or `cp`)"
-  default     = ""
-}
-
-variable "stage" {
-  type        = string
-  description = "Stage (e.g. `prod`, `dev`, `staging`)"
-  default     = ""
-}
-
-variable "name" {
-  type        = string
-  description = "Name of the application"
-}
-
-variable "delimiter" {
-  type        = string
-  default     = "-"
-  description = "Delimiter between `namespace`, `stage`, `name` and `attributes`"
-}
-
-variable "attributes" {
-  type        = list(string)
-  description = "Additional attributes (_e.g._ \"1\")"
-  default     = []
-}
-
-variable "tags" {
-  type        = map(string)
-  description = "Additional tags (_e.g._ { BusinessUnit : ABC })"
-  default     = {}
-}
-
 variable "ssh_key_pair" {
   type        = string
   description = "SSH key pair to be provisioned on the instance"
@@ -48,7 +13,7 @@ variable "generate_ssh_key_pair" {
 variable "associate_public_ip_address" {
   type        = bool
   description = "Associate a public IP address with the instance"
-  default     = true
+  default     = false
 }
 
 variable "ssh_key_pair_path" {
@@ -80,16 +45,47 @@ variable "vpc_id" {
   description = "The ID of the VPC that the instance security group belongs to"
 }
 
-variable "security_groups" {
-  description = "List of Security Group IDs allowed to connect to the instance"
-  type        = list(string)
-  default     = []
+variable "security_group_enabled" {
+  type        = bool
+  description = "Whether to create default Security Group for EC2 instances."
+  default     = true
 }
 
-variable "allowed_ports" {
-  type        = list(number)
-  description = "List of allowed ingress ports"
+variable "security_group_description" {
+  type        = string
+  default     = "EC2 instances Security Group"
+  description = "The Security Group description."
+}
+
+variable "security_group_use_name_prefix" {
+  type        = bool
+  default     = false
+  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
+}
+
+variable "security_group_rules" {
+  type = list(any)
+  default = [
+    {
+      type        = "egress"
+      from_port   = 0
+      to_port     = 65535
+      protocol    = "-1"
+      cidr_blocks = ["0.0.0.0/0"]
+      description = "Allow all outbound traffic"
+    }
+  ]
+  description = <<-EOT
+    A list of maps of Security Group rules. 
+    The values of map is fully complated with `aws_security_group_rule` resource. 
+    To get more info see https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group_rule .
+  EOT
+}
+
+variable "security_groups" {
+  type        = list(string)
   default     = []
+  description = "A list of Security Group IDs to associate with EC2 instances."
 }
 
 variable "subnet" {
@@ -274,12 +270,6 @@ variable "create_default_security_group" {
   default     = true
 }
 
-variable "instance_enabled" {
-  type        = bool
-  description = "Flag to control the instance creation. Set to false if it is necessary to skip instance creation"
-  default     = true
-}
-
 variable "additional_ips_count" {
   type        = number
   description = "Count of additional EIPs"
@@ -297,7 +287,38 @@ variable "hibernation" {
   description = "this will all for hibernation"
 }
 
-variable "encrypted" {
-  default = false
-  description = "encrypts root volume of instance"
+variable "permissions_boundary_arn" {
+  type        = string
+  description = "Policy ARN to attach to instance role as a permissions boundary"
+  default     = ""
+}
+
+variable "root_block_device_encrypted" {
+  type        = bool
+  default     = true
+  description = "Whether to encrypt the root block device"
+}
+
+variable "metadata_http_tokens_required" {
+  type        = bool
+  default     = true
+  description = "Whether or not the metadata service requires session tokens, also referred to as Instance Metadata Service Version 2."
+}
+
+variable "metadata_http_endpoint_enabled" {
+  type        = bool
+  default     = true
+  description = "Whether the metadata service is available"
+}
+
+variable "kms_key_id" {
+  type        = string
+  default     = null
+  description = "KMS key ID used to encrypt EBS volume. When specifying kms_key_id, ebs_volume_encrypted needs to be set to true"
+}
+
+variable "ebs_volume_encrypted" {
+  type        = bool
+  description = "Size of the EBS volume in gigabytes"
+  default     = true
 }

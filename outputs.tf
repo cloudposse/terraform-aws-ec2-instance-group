@@ -23,6 +23,16 @@ output "ids" {
   value       = aws_instance.default.*.id
 }
 
+output "name" {
+  description = "Instance(s) name"
+  value       = module.label.id
+}
+
+/* output "aws_key_pair_name" {
+  description = "Name of AWS key pair"
+  value       = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : var.generate_ssh_key_pair ? module.ssh_key_pair.key_name : ""
+} */
+
 output "new_ssh_keypair_generated" {
   value       = signum(length(var.ssh_key_pair)) == 1 ? false : true
   description = "Was a new ssh_key_pair generated"
@@ -30,14 +40,22 @@ output "new_ssh_keypair_generated" {
 
 output "security_group_ids" {
   description = "ID on the new AWS Security Group associated with creating instance"
-  value = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
+  value       = compact(concat(module.security_group.*.id, var.security_groups))
+}
+
+output "security_group_id" {
+  value       = module.security_group.id
+  description = "EC2 instances Security Group ID"
+}
+
+output "security_group_arn" {
+  value       = module.security_group.arn
+  description = "EC2 instances Security Group ARN"
+}
+
+output "security_group_name" {
+  value       = module.security_group.name
+  description = "EC2 instances Security Group name"
 }
 
 output "role_names" {
@@ -66,11 +84,6 @@ output "ebs_ids" {
 output "primary_network_interface_ids" {
   description = "IDs of the instance's primary network interface"
   value       = aws_instance.default.*.primary_network_interface_id
-}
-
-output "network_interface_ids" {
-  description = "IDs of the network interface that was created with the instance"
-  value       = aws_instance.default.*.network_interface_id
 }
 
 output "eip_per_instance_count" {
