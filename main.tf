@@ -96,33 +96,15 @@ resource "aws_instance" "default" {
   monitoring                  = var.monitoring
   #private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
-<<<<<<< HEAD
-  ipv6_address_count          = var.ipv6_address_count
-  ipv6_addresses              = var.ipv6_addresses
-  hibernation                 = var.hibernation
-
-  vpc_security_group_ids = compact(
-    concat(
-      [
-        var.create_default_security_group ? join("", aws_security_group.default.*.id) : ""
-      ],
-      var.security_groups
-    )
-  )
-=======
   ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
   ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
   vpc_security_group_ids      = compact(concat(module.security_group.*.id, var.security_groups))
->>>>>>> upstream/master
 
   root_block_device {
     volume_type           = local.root_volume_type
     volume_size           = var.root_volume_size
     iops                  = local.root_iops
     delete_on_termination = var.delete_on_termination
-<<<<<<< HEAD
-    encrypted             = var.encrypted
-=======
     encrypted             = var.root_block_device_encrypted
     kms_key_id            = var.kms_key_id
   }
@@ -130,7 +112,6 @@ resource "aws_instance" "default" {
   metadata_options {
     http_endpoint = var.metadata_http_endpoint_enabled ? "enabled" : "disabled"
     http_tokens   = var.metadata_http_tokens_required ? "required" : "optional"
->>>>>>> upstream/master
   }
 
   tags = merge(
@@ -139,27 +120,21 @@ resource "aws_instance" "default" {
       instance_index = count.index
     }
   )
-<<<<<<< HEAD
-  lifecycle {
-    ignore_changes = [user_data]
-  }
-=======
 }
 
 ##
 ## Create keypair if one isn't provided
 ##
 
-module "ssh_key_pair" {
-  source                = "cloudposse/key-pair/aws"
-  version               = "0.18.2"
-  ssh_public_key_path   = local.ssh_key_pair_path
-  private_key_extension = ".pem"
-  generate_ssh_key      = var.generate_ssh_key_pair
-
-  context = module.this.context
->>>>>>> upstream/master
-}
+#module "ssh_key_pair" {
+#  source                = "cloudposse/key-pair/aws"
+#  version               = "0.18.2"
+#  ssh_public_key_path   = local.ssh_key_pair_path
+#  private_key_extension = ".pem"
+#  generate_ssh_key      = var.generate_ssh_key_pair
+#
+#  context = module.this.context
+#}
 
 resource "aws_eip" "default" {
   count             = local.count_default_ips
