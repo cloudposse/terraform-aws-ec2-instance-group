@@ -11,12 +11,12 @@ locals {
 }
 
 locals {
-  public_ips = compact(
+  public_ips = try(compact(
     concat(
       coalescelist(aws_eip.default.*.public_ip, aws_instance.default.*.public_ip),
       coalescelist(aws_eip.additional.*.public_ip, [""])
     )
-  )
+  ), [""])
 
   ip_dns_list = split(",", replace(join(",", local.public_ips), ".", "-"))
 
