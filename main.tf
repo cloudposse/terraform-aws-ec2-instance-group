@@ -94,7 +94,7 @@ resource "aws_instance" "default" {
   key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
-  private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
+  private_ip                  = length(var.private_ips) > 0 ? concat(var.private_ips, [""])[min(length(var.private_ips), count.index)] : null
   source_dest_check           = var.source_dest_check
   ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
   ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
