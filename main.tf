@@ -159,5 +159,5 @@ resource "aws_volume_attachment" "default" {
   count       = signum(local.instance_count) == 1 ? var.ebs_volume_count * local.instance_count : 0
   device_name = element(slice(var.ebs_device_names, 0, floor(var.ebs_volume_count * local.instance_count / max(local.instance_count, 1))), count.index)
   volume_id   = aws_ebs_volume.default.*.id[count.index]
-  instance_id = aws_instance.default.*.id[count.index]
+  instance_id = element(aws_instance.default.*.id, floor(count.index / max(var.ebs_volume_count, 1)))
 }
