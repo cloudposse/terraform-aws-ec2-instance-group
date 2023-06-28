@@ -128,7 +128,7 @@ resource "aws_instance" "default" {
 
 module "ssh_key_pair" {
   source                = "cloudposse/key-pair/aws"
-  version               = "0.18.2"
+  version               = "0.19.0"
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
