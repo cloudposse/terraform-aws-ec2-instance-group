@@ -5,12 +5,12 @@ output "public_ips" {
 
 output "private_ips" {
   description = "Private IPs of instances"
-  value       = aws_instance.default.*.private_ip
+  value       = aws_instance.default[*].private_ip
 }
 
 output "private_dns" {
   description = "Private DNS records of instances"
-  value       = aws_instance.default.*.private_dns
+  value       = aws_instance.default[*].private_dns
 }
 
 output "public_dns" {
@@ -20,7 +20,7 @@ output "public_dns" {
 
 output "ids" {
   description = "Disambiguated IDs list"
-  value       = aws_instance.default.*.id
+  value       = aws_instance.default[*].id
 }
 
 output "name" {
@@ -45,7 +45,7 @@ output "ssh_key_pem_path" {
 
 output "security_group_ids" {
   description = "ID on the new AWS Security Group associated with creating instance"
-  value       = compact(concat(module.security_group.*.id, var.security_groups))
+  value       = compact(concat(module.security_group[*].id, var.security_groups))
 }
 
 output "security_group_id" {
@@ -65,30 +65,30 @@ output "security_group_name" {
 
 output "role_names" {
   description = "Names of AWS IAM Roles associated with creating instance"
-  value       = compact(aws_iam_role.default.*.name)
+  value       = compact(aws_iam_role.default[*].name)
 }
 
 output "alarm_ids" {
   description = "CloudWatch Alarm IDs"
-  value       = aws_cloudwatch_metric_alarm.default.*.id
+  value       = aws_cloudwatch_metric_alarm.default[*].id
 }
 
 output "eni_to_eip_map" {
   description = "Map of ENI with EIP"
   value = zipmap(
-    aws_network_interface.additional.*.id,
-    aws_eip.additional.*.public_ip
+    aws_network_interface.additional[*].id,
+    aws_eip.additional[*].public_ip
   )
 }
 
 output "ebs_ids" {
   description = "IDs of EBSs"
-  value       = aws_ebs_volume.default.*.id
+  value       = aws_ebs_volume.default[*].id
 }
 
 output "primary_network_interface_ids" {
   description = "IDs of the instance's primary network interface"
-  value       = aws_instance.default.*.primary_network_interface_id
+  value       = aws_instance.default[*].primary_network_interface_id
 }
 
 output "eip_per_instance_count" {

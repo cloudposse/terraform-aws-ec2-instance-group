@@ -13,8 +13,8 @@ locals {
 locals {
   public_ips = compact(
     concat(
-      coalescelist(aws_eip.default.*.public_ip, aws_instance.default.*.public_ip),
-      coalescelist(aws_eip.additional.*.public_ip, [""])
+      coalescelist(aws_eip.default[*].public_ip, aws_instance.default[*].public_ip),
+      coalescelist(aws_eip.additional[*].public_ip, [""])
     )
   )
 
@@ -59,7 +59,7 @@ data "aws_ami" "info" {
 
 module "label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
   tags    = { AZ = local.availability_zone }
 
   context = module.this.context
@@ -68,7 +68,7 @@ module "label" {
 resource "aws_iam_instance_profile" "default" {
   count = signum(local.instance_count)
   name  = module.label.id
-  role  = join("", aws_iam_role.default.*.name)
+  role  = join("", aws_iam_role.default[*].name)
 }
 
 resource "aws_iam_role" "default" {
@@ -89,16 +89,16 @@ resource "aws_instance" "default" {
   ebs_optimized               = var.ebs_optimized
   disable_api_termination     = var.disable_api_termination
   user_data                   = var.user_data
-  iam_instance_profile        = join("", aws_iam_instance_profile.default.*.name)
+  iam_instance_profile        = join("", aws_iam_instance_profile.default[*].name)
   associate_public_ip_address = var.associate_public_ip_address
   key_name                    = signum(length(var.ssh_key_pair)) == 1 ? var.ssh_key_pair : module.ssh_key_pair.key_name
   subnet_id                   = var.subnet
   monitoring                  = var.monitoring
-  private_ip                  = concat(var.private_ips, [""])[min(length(var.private_ips), count.index)]
+  private_ip                  = concat(var.private_ips, [null])[min(length(var.private_ips), count.index)]
   source_dest_check           = var.source_dest_check
   ipv6_address_count          = var.ipv6_address_count < 0 ? null : var.ipv6_address_count
   ipv6_addresses              = length(var.ipv6_addresses) > 0 ? var.ipv6_addresses : null
-  vpc_security_group_ids      = compact(concat(module.security_group.*.id, var.security_groups))
+  vpc_security_group_ids      = compact(concat(module.security_group[*].id, var.security_groups))
 
   root_block_device {
     volume_type           = local.root_volume_type
@@ -128,7 +128,7 @@ resource "aws_instance" "default" {
 
 module "ssh_key_pair" {
   source                = "cloudposse/key-pair/aws"
-  version               = "0.18.2"
+  version               = "0.19.0"
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
@@ -138,7 +138,7 @@ module "ssh_key_pair" {
 
 resource "aws_eip" "default" {
   count             = local.count_default_ips
-  network_interface = aws_instance.default.*.primary_network_interface_id[count.index]
+  network_interface = aws_instance.default[*].primary_network_interface_id[count.index]
   vpc               = true
   depends_on        = [aws_instance.default]
   tags              = module.this.tags
@@ -158,6 +158,6 @@ resource "aws_ebs_volume" "default" {
 resource "aws_volume_attachment" "default" {
   count       = signum(local.instance_count) == 1 ? var.ebs_volume_count * local.instance_count : 0
   device_name = element(slice(var.ebs_device_names, 0, floor(var.ebs_volume_count * local.instance_count / max(local.instance_count, 1))), count.index)
-  volume_id   = aws_ebs_volume.default.*.id[count.index]
-  instance_id = aws_instance.default.*.id[count.index]
+  volume_id   = aws_ebs_volume.default[*].id[count.index]
+  instance_id = aws_instance.default[*].id[count.index]
 }
