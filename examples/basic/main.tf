@@ -1,15 +1,18 @@
 data "aws_region" "default" {}
 
 data "aws_subnet" "default" {
-  id = data.aws_subnet_ids.all.ids[0]
+  id = data.aws_subnets.all.ids[0]
 }
 
 data "aws_vpc" "default" {
   default = true
 }
 
-data "aws_subnet_ids" "all" {
-  vpc_id = data.aws_vpc.default.id
+data "aws_subnets" "all" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
 }
 
 provider "aws" {
