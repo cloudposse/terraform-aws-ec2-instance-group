@@ -210,12 +210,6 @@ variable "delete_on_termination" {
   default     = true
 }
 
-variable "welcome_message" {
-  type        = string
-  description = "Welcome message"
-  default     = ""
-}
-
 variable "comparison_operator" {
   type        = string
   description = "The arithmetic operation to use when comparing the specified Statistic and Threshold. Possible values are: GreaterThanOrEqualToThreshold, GreaterThanThreshold, LessThanThreshold, LessThanOrEqualToThreshold"
@@ -262,12 +256,6 @@ variable "default_alarm_action" {
   type        = string
   description = "Default alarm action"
   default     = "action/actions/AWS_EC2.InstanceId.Reboot/1.0"
-}
-
-variable "create_default_security_group" {
-  type        = bool
-  description = "Create default Security Group with only Egress traffic allowed"
-  default     = true
 }
 
 variable "additional_ips_count" {
