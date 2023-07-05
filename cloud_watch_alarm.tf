@@ -16,7 +16,7 @@ resource "aws_cloudwatch_metric_alarm" "default" {
   threshold           = var.metric_threshold
 
   dimensions = {
-    InstanceId = sort(aws_instance.default.*.id)[count.index]
+    InstanceId = sort(aws_instance.default[*].id)[count.index]
   }
 
   alarm_actions = [
