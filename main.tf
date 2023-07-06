@@ -59,7 +59,7 @@ data "aws_ami" "info" {
 
 module "label" {
   source  = "cloudposse/label/null"
-  version = "0.24.1"
+  version = "0.25.0"
   tags    = { AZ = local.availability_zone }
 
   context = module.this.context
@@ -128,7 +128,7 @@ resource "aws_instance" "default" {
 
 module "ssh_key_pair" {
   source                = "cloudposse/key-pair/aws"
-  version               = "0.18.2"
+  version               = "0.19.0"
   ssh_public_key_path   = local.ssh_key_pair_path
   private_key_extension = ".pem"
   generate_ssh_key      = var.generate_ssh_key_pair
