@@ -73,16 +73,7 @@ variable "security_group_name" {
 
 variable "security_group_rules" {
   type = list(any)
-  default = [
-    {
-      type        = "egress"
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-      description = "Allow all outbound traffic"
-    }
-  ]
+  default = []
   description = <<-EOT
     A list of maps of Security Group rules. 
     The values of map is fully complated with `aws_security_group_rule` resource. 
