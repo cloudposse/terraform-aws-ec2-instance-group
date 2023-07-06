@@ -60,13 +60,6 @@ module "ec2_instance_group" {
 
   security_group_rules = [
     {
-      type        = "egress"
-      from_port   = 0
-      to_port     = 65535
-      protocol    = "-1"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
       type        = "ingress"
       from_port   = 22
       to_port     = 22
