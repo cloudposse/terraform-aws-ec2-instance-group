@@ -55,7 +55,7 @@ func TestExamplesComplete(t *testing.T) {
 	securityGroupName := terraform.Output(t, terraformOptions, "security_group_name")
 	expectedSecurityGroupName := "eg-test-ec2-group-test-" + randId
 	// SG name is used as a prefix in this case because we use create_before_destroy here.
-	assert.True(t, strings.HasPrefix(securityGroupName, expectedSecurityGroupName))
+	assert.True(t, strings.HasPrefix(securityGroupName, expectedSecurityGroupName), "Expected security_group_name to start with " + expectedSecurityGroupName)
 
 	// Run `terraform output` to get the value of an output variable
 	securityGroupID := terraform.Output(t, terraformOptions, "security_group_id")
