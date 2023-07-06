@@ -72,8 +72,8 @@ variable "security_group_name" {
 }
 
 variable "security_group_rules" {
-  type = list(any)
-  default = []
+  type        = list(any)
+  default     = []
   description = <<-EOT
     A list of maps of Security Group rules. 
     The values of map is fully complated with `aws_security_group_rule` resource. 
