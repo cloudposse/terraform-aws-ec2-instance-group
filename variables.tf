@@ -57,10 +57,18 @@ variable "security_group_description" {
   description = "The Security Group description."
 }
 
-variable "security_group_use_name_prefix" {
-  type        = bool
-  default     = false
-  description = "Whether to create a default Security Group with unique name beginning with the normalized prefix."
+variable "security_group_name" {
+  type        = list(string)
+  description = <<-EOT
+    The name to assign to the security group. Must be unique within the VPC.
+    If not provided, will be derived from the `null-label.context` passed in.
+    If `create_before_destroy` is true, will be used as a name prefix.
+    EOT
+  default     = []
+  validation {
+    condition     = length(var.security_group_name) < 2
+    error_message = "Only 1 security group name can be provided."
+  }
 }
 
 variable "security_group_rules" {
