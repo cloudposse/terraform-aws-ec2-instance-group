@@ -5,3 +5,4 @@ repository:
   description: Terraform Module for provisioning multiple general purpose EC2 hosts for stateful applications.
   homepage: https://cloudposse.com/accelerate
   topics: terraform, terraform-module, instance-group, stateful-set, cluster, ec2, instances, aws, hcl2
+
